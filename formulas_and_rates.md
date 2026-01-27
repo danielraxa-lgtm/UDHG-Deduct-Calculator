@@ -1,44 +1,36 @@
-# Insurance Logic Documentation
+# UDHG Deduction Calculator: Formulas and Rates
 
-## 1. Workers' Comp Base Rates
-*Base rates per $100 of payroll for supported states.*
+## Calculation Logic
 
-| State | State Code | Base Rate (Class 8810 - Clerical) | Base Rate (Default/Other) |
-| :--- | :---: | :---: | :---: |
-| Arizona | AZ | $0.11 | $1.05 |
-| Colorado | CO | $0.15 | $1.20 |
-| Florida | FL | $0.22 | $1.45 |
-| Maryland | MD | $0.18 | $1.10 |
-| Michigan | MI | $0.14 | $1.00 |
-| New Jersey | NJ | $0.25 | $1.50 |
-| New York | NY | $0.30 | $1.75 |
-| Pennsylvania| PA | $0.20 | $1.35 |
-| Texas | TX | $0.12 | $0.95 |
+The Deduction Calculator determines the Workers' Compensation premium deduction based on the state of operation and the gross payroll amount.
 
-> **Note:** These are base rates. Experience Modification Rate (EMR) applies on top of these.
+### 1. Formula
+For the specific states listed below, the **Adjusted Rate** is calculated using the following formula:
 
-## 2. Fixed Liability Rates
-*Standard annual premiums for liability coverage.*
+$$\text{Adjusted Rate} = \text{Base Rate} \times \text{EMR} \times (1 - \text{Large Deductible Factor})$$
 
-| Coverage Type | Annual Premium | Limit |
-| :--- | :---: | :--- |
-| **General Liability (GL)** | $650.00 | $1M / $2M Aggregate |
-| **Umbrella Policy** | $400.00 | $1M Excess |
+The final **Total WC Premium** is calculated as:
 
-## 3. Calculation Logic for Deductions
+$$\text{Total Premium} = \left( \frac{\text{Gross Payroll}}{100} \right) \times \text{Adjusted Rate}$$
 
-### Total Deduction Formula
-The total deduction is calculated as the sum of the Workers' Comp premium and the Liability portion.
+### 2. Default Rate
+For any state **not** listed in the table below, a flat default rate is applied:
+* **Default Rate:** $0.1665 per $100 of payroll.
 
-$$
-\text{Total Deduction} = \text{WC Premium} + \text{Liability Premium}
-$$
+---
 
-### Workers' Comp Calculation
-$$
-\text{WC Premium} = \left( \frac{\text{Gross Payroll}}{100} \right) \times \text{State Rate} \times \text{EMR}
-$$
+## Rate Table (Effective 6/1/2025)
 
-* **Gross Payroll**: The total wages paid for the period.
-* **State Rate**: Based on the table above.
-* **EMR**: Experience Modification Rate (default = 1.0).
+The following specific rates are hardcoded into the calculator:
+
+| State | Class Code | Description | Base Rate | EMR | LDF | Adjusted Rate (Approx) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **AZ** | 5102 | Door & Window Installation | 3.31 | 0.95 | 0.2737 | **2.28385** |
+| **CO** | 5102 | Door & Window Installation | 3.29 | 0.95 | 0.0549 | **2.95391** |
+| **FL** | 5102 | Door & Window Installation | 5.33 | 0.95 | 0.2124 | **3.98801** |
+| **MD** | 5102 | Door/Frame/Sash Erection | 4.09 | 0.95 | 0.0548 | **3.67257** |
+| **MI** | 5146 | Furniture Install | 7.54 | 0.65 | 0.1100 | **4.36189** |
+| **NJ** | 5103 | Sheet Metal Ext Wall Inst | 6.28 | 1.115 | 0.0829 | **6.42172** |
+| **NY** | 5102 | Door/Frame/Sash Erection | 11.17 | 1.87 | 0.0832 | **19.15003** |
+| **PA** | 658 | Arch Bronze/Iron/Brass | 6.43 | 1.143 | 0.1931 | **5.93030** |
+| **TX** | 5102 | Alum Door/Window Inst | 2.15 | 0.95 | 0.0800 | **1.87910** |
