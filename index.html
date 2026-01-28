@@ -57,6 +57,7 @@
             font-weight: 500;
             color: #666;
             transition: all 0.2s;
+            text-decoration: none;
         }
         
         .tab:hover {
@@ -77,107 +78,6 @@
         }
         
         .panel.active {
-            display: block;
-        }
-        
-        .calc-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-        
-        @media (max-width: 768px) {
-            .calc-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .calc-section h2 {
-            color: #8B2332;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: #444;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-family: inherit;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #8B2332;
-        }
-        
-        .form-group small {
-            display: block;
-            margin-top: 4px;
-            color: #888;
-            font-size: 0.85rem;
-        }
-        
-        .results {
-            background: #f9f9f9;
-            border-radius: 8px;
-            padding: 20px;
-        }
-        
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .result-row:last-child {
-            border-bottom: none;
-        }
-        
-        .result-row.total {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: #8B2332;
-            border-top: 2px solid #8B2332;
-            margin-top: 10px;
-            padding-top: 15px;
-        }
-        
-        .result-label {
-            color: #666;
-        }
-        
-        .result-value {
-            font-weight: 600;
-        }
-        
-        .alert {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 6px;
-            padding: 15px;
-            margin-top: 20px;
-            display: none;
-        }
-        
-        .alert.show {
             display: block;
         }
         
@@ -401,6 +301,35 @@
             }
         }
         
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #444;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8B2332;
+        }
+        
         .email-preview {
             background: #f9f9f9;
             border: 1px solid #ddd;
@@ -427,7 +356,7 @@
     <div class="container">
         <div class="tabs">
             <button class="tab active" onclick="showTab('process')">Process Flow</button>
-            <button class="tab" onclick="showTab('calculator')">Deduction Calculator</button>
+            <a class="tab" href="https://danielraxa-lgtm.github.io/UDHG-Deduct-Calculator/calculator.html" target="_blank">Deduction Calculator ↗</a>
             <button class="tab" onclick="showTab('coi')">COI Requests</button>
             <button class="tab" onclick="showTab('faq')">FAQ</button>
             <button class="tab" onclick="showTab('enrollment')">Enrollment Info</button>
@@ -511,7 +440,7 @@
             
             <div class="process-step">
                 <h3><span class="step-number">2</span> Calculate the Deduction</h3>
-                <p>Use the <strong>Deduction Calculator</strong> tab. Enter your project details and get the credit amount.</p>
+                <p>Use the <strong><a href="https://danielraxa-lgtm.github.io/UDHG-Deduct-Calculator/calculator.html" target="_blank" style="color:#8B2332;">Deduction Calculator</a></strong>. Enter your project details and get the credit amount.</p>
                 <p style="margin-top:10px;"><strong>Remember:</strong> Use labor COST (payroll), not labor SELL. Using sell price gives away our profit.</p>
             </div>
             
@@ -537,83 +466,6 @@
             
             <div class="warning-box">
                 <strong>⚠️ Don't skip steps!</strong> Missing enrollment can cost tens of thousands of dollars or leave us uninsured. When in doubt, email Risk Management.
-            </div>
-        </div>
-        
-        <!-- Calculator Panel -->
-        <div id="calculator" class="panel">
-            <div class="calc-grid">
-                <div class="calc-section">
-                    <h2>Project Inputs</h2>
-                    
-                    <div class="form-group">
-                        <label for="state">Project State</label>
-                        <select id="state" onchange="calculate()">
-                            <option value="">Select State...</option>
-                            <option value="AZ">Arizona (AZ)</option>
-                            <option value="CO">Colorado (CO)</option>
-                            <option value="FL">Florida (FL)</option>
-                            <option value="MD">Maryland (MD)</option>
-                            <option value="MI">Michigan (MI)</option>
-                            <option value="NJ">New Jersey (NJ)</option>
-                            <option value="NY">New York (NY)</option>
-                            <option value="PA">Pennsylvania (PA)</option>
-                            <option value="TX">Texas (TX)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="contractValue">Contract or Change Order Value ($)</label>
-                        <input type="number" id="contractValue" placeholder="e.g., 500000" onchange="calculate()" oninput="calculate()">
-                        <small>Total sell price for the scope</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="laborScope">Labor Scope</label>
-                        <select id="laborScope" onchange="togglePayroll(); calculate()">
-                            <option value="none">None (Delivery/Supply Only)</option>
-                            <option value="subcontracted">Subcontracted</option>
-                            <option value="self">Self-Install (UDHG Crews)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group" id="payrollGroup" style="display: none;">
-                        <label for="payroll">Estimated Self-Performed Payroll ($)</label>
-                        <input type="number" id="payroll" placeholder="e.g., 100000" onchange="calculate()" oninput="calculate()">
-                        <small>Use labor COST (payroll), not labor sell!</small>
-                    </div>
-                </div>
-                
-                <div class="calc-section">
-                    <h2>Insurance Deduction Results</h2>
-                    
-                    <div class="results">
-                        <div class="result-row">
-                            <span class="result-label">Workers' Comp (WC)</span>
-                            <span class="result-value" id="wcResult">$0</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">General Liability (GL)</span>
-                            <span class="result-value" id="glResult">$0</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Umbrella</span>
-                            <span class="result-value" id="umbrellaResult">$0</span>
-                        </div>
-                        <div class="result-row total">
-                            <span class="result-label">Total OCIP/CCIP Deduction</span>
-                            <span class="result-value" id="totalResult">$0</span>
-                        </div>
-                    </div>
-                    
-                    <div class="alert" id="subAlert">
-                        <strong>Note:</strong> Labor is subcontracted. WC exposure belongs to the subcontractor, not us. Notify Risk Management if you need to enroll in the wrap program.
-                    </div>
-                </div>
-            </div>
-            
-            <div class="info-box">
-                <strong>Why labor cost, not labor sell?</strong> Insurance is based on actual exposure (what we pay workers), not what we charge customers. Using sell price includes our markup and profit—giving that away as a deduction means we lose money.
             </div>
         </div>
         
@@ -837,58 +689,11 @@
     </div>
     
     <script>
-        // Rates encoded - not visible as plain numbers in source
-        var _0x=['AZ','CO','FL','MD','MI','NJ','NY','PA','TX'];
-        var _r=function(a,b){return(a^b)/100};
-        var _w={};_w[_0x[0]]=_r(431,100);_w[_0x[1]]=_r(429,100);_w[_0x[2]]=_r(633,100);_w[_0x[3]]=_r(509,100);_w[_0x[4]]=_r(854,100);_w[_0x[5]]=_r(728,100);_w[_0x[6]]=_r(1217,100);_w[_0x[7]]=_r(743,100);_w[_0x[8]]=_r(315,100);
-        var _g=_r(11506,100000);var _u=_r(36591,100000);
-        
         function showTab(tabId) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
-        }
-        
-        function togglePayroll() {
-            const laborScope = document.getElementById('laborScope').value;
-            const payrollGroup = document.getElementById('payrollGroup');
-            const subAlert = document.getElementById('subAlert');
-            
-            if (laborScope === 'self') {
-                payrollGroup.style.display = 'block';
-                subAlert.classList.remove('show');
-            } else {
-                payrollGroup.style.display = 'none';
-                document.getElementById('payroll').value = '';
-                subAlert.classList.toggle('show', laborScope === 'subcontracted');
-            }
-        }
-        
-        function calculate() {
-            const state = document.getElementById('state').value;
-            const contractValue = parseFloat(document.getElementById('contractValue').value) || 0;
-            const laborScope = document.getElementById('laborScope').value;
-            const payroll = parseFloat(document.getElementById('payroll').value) || 0;
-            
-            let wc = 0, gl = 0, umbrella = 0;
-            
-            gl = (contractValue / 1000) * _g;
-            umbrella = (contractValue / 1000) * _u;
-            
-            if (laborScope === 'self' && state && _w[state]) {
-                wc = (payroll / 100) * _w[state];
-            }
-            
-            wc = Math.round(wc);
-            gl = Math.round(gl);
-            umbrella = Math.round(umbrella);
-            const total = wc + gl + umbrella;
-            
-            document.getElementById('wcResult').textContent = '$' + wc.toLocaleString();
-            document.getElementById('glResult').textContent = '$' + gl.toLocaleString();
-            document.getElementById('umbrellaResult').textContent = '$' + umbrella.toLocaleString();
-            document.getElementById('totalResult').textContent = '$' + total.toLocaleString();
         }
         
         function generateCOIEmail() {
