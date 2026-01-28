@@ -3,311 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UDHG Insurance Hub</title>
+    <title>Insurance Cost Worksheet Calculator</title>
     <style>
-        :root {
-            --primary-color: #8B0000; /* Dark Red/Burgundy */
-            --bg-color: #f4f4f4;
-            --text-color: #333;
-            --border-radius: 6px;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * {
+            box-sizing: border-box;
             margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            padding: 0;
         }
-
-        /* HEADER */
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
         .header {
-            background-color: var(--primary-color);
+            background: #2c3e50;
             color: white;
-            padding: 1rem 2rem;
+            padding: 20px 40px;
         }
-        .header h1 { margin: 0; font-size: 1.5rem; }
-        .header p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.9; }
-
-        /* TABS (Visual Only) */
-        .nav-tabs {
-            background-color: white;
-            padding: 0 2rem;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            gap: 1rem;
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
         }
-        .nav-item {
-            padding: 1rem;
-            cursor: pointer;
-            color: #666;
+        
+        .header .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .confidential-banner {
+            background: #c0392b;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 0.85rem;
             font-weight: 500;
         }
-        .nav-item.active {
-            border-bottom: 3px solid var(--primary-color);
-            color: var(--primary-color);
+        
+        .confidential-banner strong {
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-
-        /* MAIN CONTAINER */
+        
         .container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #2c3e50;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .calc-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Two Columns */
-            gap: 2rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
         }
-
-        /* INPUTS (Left Column) */
-        .input-group { margin-bottom: 1.5rem; }
-        label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #444; }
-        select, input {
+        
+        @media (max-width: 768px) {
+            .calc-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .calc-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .calc-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #444;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
-            padding: 0.75rem;
+            padding: 12px;
             border: 1px solid #ddd;
-            border-radius: var(--border-radius);
+            border-radius: 6px;
             font-size: 1rem;
-            box-sizing: border-box;
+            font-family: inherit;
         }
-        select:focus, input:focus {
-            border-color: var(--primary-color);
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
+            border-color: #2c3e50;
         }
-        .hidden { display: none; }
-
-        /* RESULTS (Right Column) */
-        .results-panel {
-            background-color: #f9f9f9;
-            padding: 1.5rem;
-            border-radius: var(--border-radius);
-            border: 1px solid #eee;
+        
+        .form-group small {
+            display: block;
+            margin-top: 4px;
+            color: #888;
+            font-size: 0.85rem;
         }
-        .results-header {
-            color: var(--primary-color);
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 0.5rem;
+        
+        .results {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
         }
+        
         .result-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
         }
-        .total-row {
-            border-top: 2px solid #ddd;
-            padding-top: 1rem;
-            margin-top: 1rem;
-            font-weight: bold;
+        
+        .result-row:last-child {
+            border-bottom: none;
+        }
+        
+        .result-row.total {
+            font-weight: 700;
             font-size: 1.2rem;
-            color: #333;
-        }
-
-        /* INFO BOX */
-        .info-box {
-            grid-column: 1 / -1; /* Spans both columns */
-            background-color: #eef6fc;
-            border-left: 4px solid #2c88d9;
-            padding: 1rem;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            line-height: 1.5;
             color: #2c3e50;
+            border-top: 2px solid #2c3e50;
+            margin-top: 10px;
+            padding-top: 15px;
         }
-
-        /* FOOTER */
+        
+        .result-label {
+            color: #666;
+        }
+        
+        .result-value {
+            font-weight: 600;
+        }
+        
+        .subcontractor-section {
+            display: none;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .subcontractor-section.show {
+            display: block;
+        }
+        
+        .subcontractor-section h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        
+        .alert {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .alert.show {
+            display: block;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        
+        .btn:hover {
+            background: #1a252f;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+        }
+        
+        .btn-warning:hover {
+            background: #d68910;
+        }
+        
+        .btn-back {
+            background: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .btn-back:hover {
+            background: #636e72;
+        }
+        
         .footer {
             text-align: center;
-            font-size: 0.8rem;
+            padding: 30px 20px;
             color: #888;
-            margin: 2rem 0;
-            padding: 0 1rem;
+            font-size: 0.85rem;
+            border-top: 1px solid #ddd;
+            margin-top: 40px;
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
+        
+        .footer .developer {
+            margin-bottom: 10px;
+            color: #666;
+        }
+        
+        .contact-box {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .contact-box p {
+            margin: 5px 0;
+            color: #555;
+        }
+        
+        .warning-text {
+            color: #856404;
+            font-size: 0.9rem;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-
+    <div class="confidential-banner">
+        <strong>⚠️ Confidential</strong> — Internal use only. Do not distribute this calculator to external parties.
+    </div>
+    
     <div class="header">
-        <h1>UNIFIED DOOR & HARDWARE — Insurance Hub</h1>
-        <p>OCIP/CCIP Process, Deduction Calculator, COI Requests & More</p>
+        <h1>Insurance Cost Worksheet Calculator</h1>
+        <div class="subtitle">OCIP/CCIP Deduction Estimator for Bid Preparation</div>
     </div>
-
-    <div class="nav-tabs">
-        <div class="nav-item">Process Flow</div>
-        <div class="nav-item active">Deduction Calculator</div>
-        <div class="nav-item">COI Requests</div>
-        <div class="nav-item">FAQ</div>
-    </div>
-
+    
     <div class="container">
+        <a href="https://danielraxa-lgtm.github.io/UDHG-Deduct-Calculator/" class="btn btn-back">← Back to Insurance Hub</a>
         
-        <div class="input-section">
-            <h3 style="color:var(--primary-color); margin-top:0;">Project Inputs</h3>
-
-            <div class="input-group">
-                <label for="stateSelector">Project State</label>
-                <select id="stateSelector" onchange="calculate()">
-                    <option value="">-- Select State --</option>
-                    <option value="AZ">Arizona (AZ)</option>
-                    <option value="CO">Colorado (CO)</option>
-                    <option value="FL">Florida (FL)</option>
-                    <option value="MD">Maryland (MD)</option>
-                    <option value="MI">Michigan (MI)</option>
-                    <option value="NJ">New Jersey (NJ)</option>
-                    <option value="NY">New York (NY)</option>
-                    <option value="PA">Pennsylvania (PA)</option>
-                    <option value="TX">Texas (TX)</option>
-                    <option value="OTHER">Other State (Default)</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label for="contractValue">Contract or Change Order Value ($)</label>
-                <input type="number" id="contractValue" placeholder="e.g. 500000" oninput="calculate()">
-                <small style="color:#666; display:block; margin-top:4px;">Basis for GL & Umbrella calculations</small>
-            </div>
-
-            <div class="input-group">
-                <label for="laborScope">Labor Scope</label>
-                <select id="laborScope" onchange="togglePayroll()">
-                    <option value="none">None (Delivery/Supply Only)</option>
-                    <option value="sub">Subcontracted</option>
-                    <option value="self">Self-Install (UDHG Crews)</option>
-                </select>
-            </div>
-
-            <div class="input-group hidden" id="payrollGroup">
-                <label for="payrollInput">Estimated Labor Payroll ($)</label>
-                <input type="number" id="payrollInput" placeholder="Enter labor cost (not sell price)" oninput="calculate()">
-                <small style="color:#666; display:block; margin-top:4px;">Basis for Workers' Comp calculation</small>
-            </div>
-        </div>
-
-        <div class="results-panel">
-            <div class="results-header">Insurance Deduction Results</div>
-
-            <div class="result-row">
-                <span>Workers' Comp (WC) <small id="wc-rate-display" style="color:#888;">(Rate: --)</small></span>
-                <span id="wcResult">$0.00</span>
-            </div>
-
-            <div class="result-row">
-                <span>General Liability (GL) <small style="color:#888;">(0.1506 / $1k)</small></span>
-                <span id="glResult">$0.00</span>
-            </div>
-
-            <div class="result-row">
-                <span>Umbrella <small style="color:#888;">(0.36691 / $1k)</small></span>
-                <span id="umbrellaResult">$0.00</span>
-            </div>
-
-            <div class="result-row total-row">
-                <span>Total OCIP/CCIP Deduction</span>
-                <span id="totalResult" style="color:var(--primary-color);">$0.00</span>
-            </div>
-        </div>
-
         <div class="info-box">
-            <strong>Why labor cost, not labor sell?</strong> Insurance is based on actual exposure (what we pay workers), not what we charge customers. Using sell price includes our markup and profit—giving that away as a deduction means we lose money.
+            <strong>Purpose:</strong> This calculator is intended for estimating insurance deductions during the bid process, typically prior to any contracts being signed. Use it to calculate OCIP/CCIP credits for your bid pricing.
+        </div>
+        
+        <div class="calc-grid">
+            <div class="calc-section">
+                <h2>Project Information</h2>
+                
+                <div class="form-group">
+                    <label for="projectName">Project Name</label>
+                    <input type="text" id="projectName" placeholder="e.g., Downtown Office Tower Phase 2">
+                </div>
+                
+                <div class="form-group">
+                    <label for="state">Project State</label>
+                    <select id="state" onchange="calculate()">
+                        <option value="">Select State...</option>
+                        <option value="AZ">Arizona (AZ)</option>
+                        <option value="CO">Colorado (CO)</option>
+                        <option value="FL">Florida (FL)</option>
+                        <option value="MD">Maryland (MD)</option>
+                        <option value="MI">Michigan (MI)</option>
+                        <option value="NJ">New Jersey (NJ)</option>
+                        <option value="NY">New York (NY)</option>
+                        <option value="PA">Pennsylvania (PA)</option>
+                        <option value="TX">Texas (TX)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contractValue">Contract or Change Order Value ($)</label>
+                    <input type="number" id="contractValue" placeholder="e.g., 500000" onchange="calculate()" oninput="calculate()">
+                    <small>Total sell price for the scope</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="laborScope">Labor Scope</label>
+                    <select id="laborScope" onchange="toggleLaborFields(); calculate()">
+                        <option value="none">None (Delivery/Supply Only)</option>
+                        <option value="subcontracted">Subcontracted</option>
+                        <option value="self">Self-Performed Crews</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="payrollGroup" style="display: none;">
+                    <label for="payroll">Estimated Self-Performed Payroll ($)</label>
+                    <input type="number" id="payroll" placeholder="e.g., 100000" onchange="calculate()" oninput="calculate()">
+                    <small>Use labor COST (payroll), not labor sell!</small>
+                </div>
+                
+                <!-- Subcontractor Section -->
+                <div class="subcontractor-section" id="subcontractorSection">
+                    <h3>📋 Subcontractor Information Required</h3>
+                    <p class="warning-text">When labor is subcontracted, we need the following information to coordinate wrap enrollment:</p>
+                    
+                    <div class="form-group">
+                        <label for="subAmount">Subcontracted Labor Amount ($)</label>
+                        <input type="number" id="subAmount" placeholder="e.g., 75000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subName">Subcontractor Company Name</label>
+                        <input type="text" id="subName" placeholder="e.g., ABC Installation Services">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subContactName">Subcontractor Contact Name</label>
+                        <input type="text" id="subContactName" placeholder="e.g., John Smith">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subContactEmail">Subcontractor Contact Email</label>
+                        <input type="email" id="subContactEmail" placeholder="e.g., jsmith@abcinstall.com">
+                    </div>
+                    
+                    <button class="btn btn-warning" onclick="draftSubcontractorEmail()">📧 Draft Email to Wrap Enrollment</button>
+                </div>
+            </div>
+            
+            <div class="calc-section">
+                <h2>Insurance Deduction Results</h2>
+                
+                <div class="results">
+                    <div class="result-row">
+                        <span class="result-label">Workers' Comp (WC)</span>
+                        <span class="result-value" id="wcResult">$0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">General Liability (GL)</span>
+                        <span class="result-value" id="glResult">$0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Umbrella/Excess</span>
+                        <span class="result-value" id="umbrellaResult">$0</span>
+                    </div>
+                    <div class="result-row total">
+                        <span class="result-label">Total OCIP/CCIP Deduction</span>
+                        <span class="result-value" id="totalResult">$0</span>
+                    </div>
+                </div>
+                
+                <div class="alert" id="subAlert">
+                    <strong>Note:</strong> Labor is subcontracted. WC exposure belongs to the subcontractor. Please complete the subcontractor information and notify the Wrap Enrollment team.
+                </div>
+                
+                <div class="contact-box">
+                    <p><strong>Questions?</strong></p>
+                    <p>Contact the Wrap Enrollment Team</p>
+                    <p><a href="mailto:wrap.enrollment@myfbm.com">wrap.enrollment@myfbm.com</a></p>
+                </div>
+            </div>
         </div>
     </div>
-
+    
     <div class="footer">
-        UDHG Insurance Hub | Calculator rates effective 6/1/2025 – 6/1/2026<br>
-        Questions? Contact Risk Management: riskmanagement@myfbm.com | 657-472-1661
+        <div class="developer">Developed by Daniel Raxa</div>
+        <p>For internal bid preparation use only. Contact wrap.enrollment@myfbm.com for enrollment questions.</p>
     </div>
-
+    
     <script>
-        // 1. DATA: State Specific WC Rates
+        // WC Rates by state (base rate per $100 of payroll)
         const wcRates = {
-            "AZ": { code: "5102", base: 3.31, emr: 0.95, ldf: 0.2737 },
-            "CO": { code: "5102", base: 3.29, emr: 0.95, ldf: 0.0549 },
-            "FL": { code: "5102", base: 5.33, emr: 0.95, ldf: 0.2124 },
-            "MI": { code: "5146", base: 7.54, emr: 0.65, ldf: 0.1100 },
-            "MD": { code: "5102", base: 4.09, emr: 0.95, ldf: 0.0548 },
-            "NJ": { code: "5103", base: 6.28, emr: 1.115, ldf: 0.0829 },
-            "NY": { code: "5102", base: 11.17, emr: 1.87, ldf: 0.0832 },
-            "PA": { code: "658", base: 6.43, emr: 1.143, ldf: 0.1931 },
-            "TX": { code: "5102", base: 2.15, emr: 0.95, ldf: 0.0800 }
+            'AZ': 3.31, 'CO': 3.29, 'FL': 5.33, 'MD': 4.09, 'MI': 7.54,
+            'NJ': 6.28, 'NY': 11.17, 'PA': 6.43, 'TX': 2.15
         };
-
-        const DEFAULT_WC_RATE = 0.1665; // Flat rate for other states
-        const GL_RATE = 0.1506;         // Per $1,000 Contract Value
-        const UMBRELLA_RATE = 0.36691;  // Per $1,000 Contract Value
-
-        // 2. TOGGLE PAYROLL INPUT
-        function togglePayroll() {
-            const scope = document.getElementById("laborScope").value;
-            const payrollGroup = document.getElementById("payrollGroup");
+        
+        const glRate = 0.1506;
+        const umbrellaRate = 0.36691;
+        
+        function toggleLaborFields() {
+            const laborScope = document.getElementById('laborScope').value;
+            const payrollGroup = document.getElementById('payrollGroup');
+            const subcontractorSection = document.getElementById('subcontractorSection');
+            const subAlert = document.getElementById('subAlert');
             
-            if (scope === "none") {
-                payrollGroup.classList.add("hidden");
-                document.getElementById("payrollInput").value = ""; // Clear value
-            } else {
-                payrollGroup.classList.remove("hidden");
+            payrollGroup.style.display = 'none';
+            subcontractorSection.classList.remove('show');
+            subAlert.classList.remove('show');
+            
+            if (laborScope === 'self') {
+                payrollGroup.style.display = 'block';
+            } else if (laborScope === 'subcontracted') {
+                subcontractorSection.classList.add('show');
+                subAlert.classList.add('show');
             }
-            calculate(); // Recalculate immediately
+            
+            if (laborScope !== 'self') {
+                document.getElementById('payroll').value = '';
+            }
         }
-
-        // 3. MAIN CALCULATION FUNCTION
+        
         function calculate() {
-            // Get Inputs
-            const state = document.getElementById("stateSelector").value;
-            const contractVal = parseFloat(document.getElementById("contractValue").value) || 0;
-            const payrollVal = parseFloat(document.getElementById("payrollInput").value) || 0;
-            const scope = document.getElementById("laborScope").value;
-
-            // --- A. CALCULATE GL & UMBRELLA (Based on Contract Value) ---
-            // Formula: (Value / 1000) * Rate
-            let glPremium = (contractVal / 1000) * GL_RATE;
-            let umbrellaPremium = (contractVal / 1000) * UMBRELLA_RATE;
-
-            // --- B. CALCULATE WORKERS COMP (Based on Payroll) ---
-            let wcPremium = 0;
-            let finalWcRate = 0;
-
-            if (scope !== "none" && state) {
-                // Determine Rate
-                if (wcRates[state]) {
-                    // Use specific formula: Base * EMR * (1 - LDF)
-                    const data = wcRates[state];
-                    finalWcRate = data.base * data.emr * (1 - data.ldf);
-                } else {
-                    // Use Default
-                    finalWcRate = DEFAULT_WC_RATE;
-                }
-
-                // Calculate Premium: (Payroll / 100) * Rate
-                wcPremium = (payrollVal / 100) * finalWcRate;
-            }
-
-            // --- C. DISPLAY RESULTS ---
+            const state = document.getElementById('state').value;
+            const contractValue = parseFloat(document.getElementById('contractValue').value) || 0;
+            const laborScope = document.getElementById('laborScope').value;
+            const payroll = parseFloat(document.getElementById('payroll').value) || 0;
             
-            // Format Numbers to Currency
-            const fmt = (num) => "$" + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-            document.getElementById("glResult").innerText = fmt(glPremium);
-            document.getElementById("umbrellaResult").innerText = fmt(umbrellaPremium);
-            document.getElementById("wcResult").innerText = fmt(wcPremium);
+            let wc = 0, gl = 0, umbrella = 0;
             
-            // Show active WC rate for clarity
-            if (scope !== "none" && state) {
-                document.getElementById("wc-rate-display").innerText = `(Rate: $${finalWcRate.toFixed(4)})`;
-            } else {
-                document.getElementById("wc-rate-display").innerText = "(Rate: --)";
+            gl = (contractValue / 1000) * glRate;
+            umbrella = (contractValue / 1000) * umbrellaRate;
+            
+            if (laborScope === 'self' && state && wcRates[state]) {
+                wc = (payroll / 100) * wcRates[state];
             }
+            
+            wc = Math.round(wc);
+            gl = Math.round(gl);
+            umbrella = Math.round(umbrella);
+            const total = wc + gl + umbrella;
+            
+            document.getElementById('wcResult').textContent = '$' + wc.toLocaleString();
+            document.getElementById('glResult').textContent = '$' + gl.toLocaleString();
+            document.getElementById('umbrellaResult').textContent = '$' + umbrella.toLocaleString();
+            document.getElementById('totalResult').textContent = '$' + total.toLocaleString();
+        }
+        
+        function draftSubcontractorEmail() {
+            const projectName = document.getElementById('projectName').value || '[Project Name]';
+            const state = document.getElementById('state').value || '[State]';
+            const contractValue = document.getElementById('contractValue').value || '[Contract Value]';
+            const subAmount = document.getElementById('subAmount').value || '[Amount]';
+            const subName = document.getElementById('subName').value || '[Subcontractor Name]';
+            const subContactName = document.getElementById('subContactName').value || '[Contact Name]';
+            const subContactEmail = document.getElementById('subContactEmail').value || '[Contact Email]';
+            
+            const subject = `Wrap Enrollment Notice - Subcontracted Labor - ${projectName}`;
+            
+            const body = `Hi Wrap Enrollment Team,
 
-            // Grand Total
-            const total = glPremium + umbrellaPremium + wcPremium;
-            document.getElementById("totalResult").innerText = fmt(total);
+I'm submitting a bid that includes subcontracted labor and wanted to notify you for wrap enrollment coordination.
+
+PROJECT DETAILS:
+- Project Name: ${projectName}
+- State: ${state}
+- Contract Value: $${parseInt(contractValue).toLocaleString()}
+
+SUBCONTRACTOR INFORMATION:
+- Subcontracted Labor Amount: $${parseInt(subAmount).toLocaleString()}
+- Subcontractor Company: ${subName}
+- Contact Name: ${subContactName}
+- Contact Email: ${subContactEmail}
+
+Please let me know if you need any additional information for enrollment.
+
+Thanks`;
+            
+            const mailtoLink = `mailto:wrap.enrollment@myfbm.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
         }
     </script>
 </body>
