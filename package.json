@@ -1,0 +1,8 @@
+{
+  "name": "udhg-ocip-ccip",
+  "version": "1.0.0",
+  "description": "UDHG OCIP/CCIP Calculator with Neon database integration",
+  "dependencies": {
+    "pg": "^8.11.3"
+  }
+}
