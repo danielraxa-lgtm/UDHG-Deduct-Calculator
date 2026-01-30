@@ -341,7 +341,7 @@
                 
                 <div class="form-group">
                     <label for="contractValue">Contract or Change Order Value ($)</label>
-                    <input type="number" id="contractValue" placeholder="e.g., 500000" onchange="calculate()" oninput="calculate()">
+                    <input type="text" id="contractValue" placeholder="e.g., 500,000" oninput="formatNumberInput(this); calculate()">
                     <small>Total sell price for the scope</small>
                 </div>
                 
@@ -356,7 +356,7 @@
                 
                 <div class="form-group" id="payrollGroup" style="display: none;">
                     <label for="payroll">Estimated Self-Performed Payroll ($)</label>
-                    <input type="number" id="payroll" placeholder="e.g., 100000" onchange="calculate()" oninput="calculate()">
+                    <input type="text" id="payroll" placeholder="e.g., 100,000" oninput="formatNumberInput(this); calculate()">
                     <small>Use labor COST (payroll), not labor sell!</small>
                 </div>
                 
@@ -367,7 +367,7 @@
                     
                     <div class="form-group">
                         <label for="subAmount">Subcontracted Labor Amount ($)</label>
-                        <input type="number" id="subAmount" placeholder="e.g., 75000">
+                        <input type="text" id="subAmount" placeholder="e.g., 75,000" oninput="formatNumberInput(this)">
                     </div>
                     
                     <div class="form-group">
@@ -450,9 +450,36 @@
             'AZ': 3.31, 'CO': 3.29, 'FL': 5.33, 'MD': 4.09, 'MI': 7.54,
             'NJ': 6.28, 'NY': 11.17, 'PA': 6.43, 'TX': 2.15
         };
-        
+
         const glRate = 0.1506;
         const umbrellaRate = 0.36691;
+
+        // Format number input with commas as user types
+        function formatNumberInput(input) {
+            // Get cursor position
+            const cursorPos = input.selectionStart;
+            const oldLength = input.value.length;
+
+            // Remove non-numeric characters except decimal
+            let value = input.value.replace(/[^0-9.]/g, '');
+
+            // Handle decimal numbers
+            const parts = value.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+            input.value = parts.join('.');
+
+            // Adjust cursor position
+            const newLength = input.value.length;
+            const diff = newLength - oldLength;
+            input.setSelectionRange(cursorPos + diff, cursorPos + diff);
+        }
+
+        // Parse comma-formatted number back to float
+        function parseNumber(value) {
+            if (!value) return 0;
+            return parseFloat(value.replace(/,/g, '')) || 0;
+        }
         
         function toggleLaborFields() {
             const laborScope = document.getElementById('laborScope').value;
@@ -478,9 +505,9 @@
         
         function calculate() {
             const state = document.getElementById('state').value;
-            const contractValue = parseFloat(document.getElementById('contractValue').value) || 0;
+            const contractValue = parseNumber(document.getElementById('contractValue').value);
             const laborScope = document.getElementById('laborScope').value;
-            const payroll = parseFloat(document.getElementById('payroll').value) || 0;
+            const payroll = parseNumber(document.getElementById('payroll').value);
             const includeOP = document.getElementById('includeOP').checked;
 
             let wc = 0, gl = 0, umbrella = 0;
@@ -516,14 +543,14 @@
         function draftSubcontractorEmail() {
             const projectName = document.getElementById('projectName').value || '[Project Name]';
             const state = document.getElementById('state').value || '[State]';
-            const contractValue = document.getElementById('contractValue').value || '[Contract Value]';
-            const subAmount = document.getElementById('subAmount').value || '[Amount]';
+            const contractValue = parseNumber(document.getElementById('contractValue').value);
+            const subAmount = parseNumber(document.getElementById('subAmount').value);
             const subName = document.getElementById('subName').value || '[Subcontractor Name]';
             const subContactName = document.getElementById('subContactName').value || '[Contact Name]';
             const subContactEmail = document.getElementById('subContactEmail').value || '[Contact Email]';
-            
+
             const subject = `Wrap Enrollment Notice - Subcontracted Labor - ${projectName}`;
-            
+
             const body = `Hi Wrap Enrollment Team,
 
 I'm submitting a bid that includes subcontracted labor and wanted to notify you for wrap enrollment coordination.
@@ -531,10 +558,10 @@ I'm submitting a bid that includes subcontracted labor and wanted to notify you 
 PROJECT DETAILS:
 - Project Name: ${projectName}
 - State: ${state}
-- Contract Value: $${parseInt(contractValue).toLocaleString()}
+- Contract Value: $${contractValue.toLocaleString()}
 
 SUBCONTRACTOR INFORMATION:
-- Subcontracted Labor Amount: $${parseInt(subAmount).toLocaleString()}
+- Subcontracted Labor Amount: $${subAmount.toLocaleString()}
 - Subcontractor Company: ${subName}
 - Contact Name: ${subContactName}
 - Contact Email: ${subContactEmail}
