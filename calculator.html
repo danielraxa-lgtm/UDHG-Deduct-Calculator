@@ -226,6 +226,16 @@
             background: #636e72;
         }
         
+        .btn-email {
+            background: #27ae60;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .btn-email:hover {
+            background: #219a52;
+        }
+        
         .footer {
             text-align: center;
             padding: 30px 20px;
@@ -319,6 +329,56 @@
             font-weight: 600;
             color: #27ae60;
         }
+
+        .other-state-group {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .other-state-group.show {
+            display: block;
+        }
+
+        .email-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f9f4;
+            border-radius: 8px;
+            border: 1px solid #27ae60;
+        }
+
+        .email-section h3 {
+            color: #27ae60;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .email-preview {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #999;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -341,15 +401,41 @@
         <div class="calc-grid">
             <div class="calc-section">
                 <h2>Project Information</h2>
+
+                <div class="section-label">GC / Customer</div>
+                
+                <div class="form-group">
+                    <label for="gcName">GC / Customer Name</label>
+                    <input type="text" id="gcName" placeholder="e.g., Turner Construction">
+                    <small>Parent contractor or customer we're working under</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gcContact">GC / Customer Contact (optional)</label>
+                    <input type="text" id="gcContact" placeholder="e.g., Mike Johnson - mike@turner.com">
+                </div>
+
+                <hr class="section-divider">
+                <div class="section-label">Project Details</div>
                 
                 <div class="form-group">
                     <label for="projectName">Project Name</label>
                     <input type="text" id="projectName" placeholder="e.g., Downtown Office Tower Phase 2">
                 </div>
+
+                <div class="form-group">
+                    <label for="projectAddress">Project Address (optional)</label>
+                    <input type="text" id="projectAddress" placeholder="e.g., 123 Main St, Hartford, CT">
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Estimated Start Date</label>
+                    <input type="date" id="startDate">
+                </div>
                 
                 <div class="form-group">
                     <label for="state">Project State</label>
-                    <select id="state" onchange="calculate()">
+                    <select id="state" onchange="handleStateChange()">
                         <option value="">Select State...</option>
                         <option value="AZ">Arizona (AZ)</option>
                         <option value="CO">Colorado (CO)</option>
@@ -363,7 +449,12 @@
                         <option value="PA">Pennsylvania (PA)</option>
                         <option value="RI">Rhode Island (RI)</option>
                         <option value="TX">Texas (TX)</option>
+                        <option value="other">Other State</option>
                     </select>
+                    <div class="other-state-group" id="otherStateGroup">
+                        <label for="otherStateInput">Enter State</label>
+                        <input type="text" id="otherStateInput" placeholder="e.g., CA, WA, NV" oninput="calculate()">
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -420,8 +511,6 @@
                         <label for="subContactEmail">Subcontractor Contact Email</label>
                         <input type="email" id="subContactEmail" placeholder="e.g., jsmith@abcinstall.com">
                     </div>
-                    
-                    <button class="btn btn-warning" onclick="draftSubcontractorEmail()">📧 Draft Email to Wrap Enrollment</button>
                 </div>
             </div>
             
@@ -465,6 +554,13 @@
                 <div class="alert" id="subAlert">
                     <strong>Note:</strong> Labor is subcontracted. WC exposure belongs to the subcontractor. Please complete the subcontractor information and notify the Wrap Enrollment team.
                 </div>
+
+                <!-- Email Wrap Enrollment Section -->
+                <div class="email-section">
+                    <h3>📧 Send to FBM Wrap Enrollment</h3>
+                    <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">Sends all project details and deduction results to the Wrap Enrollment team so enrollment can start right away.</p>
+                    <button class="btn btn-email" onclick="emailWrapEnrollment()">Email Wrap Enrollment Team</button>
+                </div>
                 
                 <div class="contact-box">
                     <p><strong>Questions?</strong></p>
@@ -477,7 +573,7 @@
     
     <div class="footer">
         <div class="developer">Developed by Daniel Raxa</div>
-        <p>For internal bid preparation use only. Contact wrap.enrollment@myfbm.com for enrollment questions.</p>
+        <p>For internal bid preparation use only. Contact <a href="mailto:wrap.enrollment@myfbm.com">wrap.enrollment@myfbm.com</a> for enrollment questions.</p>
         <p style="margin-top: 10px; font-size: 0.8rem;">Last Updated: February 2026 | Policy Year 2025-26</p>
     </div>
     
@@ -540,6 +636,14 @@
             'TX': 1.0
         };
 
+        // State full names for emails
+        const stateNames = {
+            'AZ': 'Arizona', 'CO': 'Colorado', 'CT': 'Connecticut',
+            'FL': 'Florida', 'MA': 'Massachusetts', 'MD': 'Maryland',
+            'MI': 'Michigan', 'NJ': 'New Jersey', 'NY': 'New York',
+            'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'TX': 'Texas'
+        };
+
         // GL and Umbrella rates (per $1,000 of contract value)
         const glRate = 0.1506;
         const umbrellaRate = 0.36691;
@@ -566,6 +670,30 @@
             if (!value) return 0;
             return parseFloat(value.replace(/,/g, '')) || 0;
         }
+
+        // Handle state dropdown change
+        function handleStateChange() {
+            const stateSelect = document.getElementById('state');
+            const otherStateGroup = document.getElementById('otherStateGroup');
+            
+            if (stateSelect.value === 'other') {
+                otherStateGroup.classList.add('show');
+            } else {
+                otherStateGroup.classList.remove('show');
+                document.getElementById('otherStateInput').value = '';
+            }
+            
+            calculate();
+        }
+
+        // Get the effective state value
+        function getEffectiveState() {
+            const stateSelect = document.getElementById('state');
+            if (stateSelect.value === 'other') {
+                return document.getElementById('otherStateInput').value.toUpperCase();
+            }
+            return stateSelect.value;
+        }
         
         function toggleLaborFields() {
             const laborScope = document.getElementById('laborScope').value;
@@ -590,7 +718,7 @@
         }
         
         function calculate() {
-            const state = document.getElementById('state').value;
+            const state = getEffectiveState();
             const contractValue = parseNumber(document.getElementById('contractValue').value);
             const laborScope = document.getElementById('laborScope').value;
             const payroll = parseNumber(document.getElementById('payroll').value);
@@ -650,34 +778,103 @@
             document.getElementById('opRow').style.display = includeOP ? 'flex' : 'none';
             document.getElementById('totalResult').textContent = '$' + total.toLocaleString();
         }
-        
-        function draftSubcontractorEmail() {
-            const projectName = document.getElementById('projectName').value || '[Project Name]';
-            const state = document.getElementById('state').value || '[State]';
-            const contractValue = parseNumber(document.getElementById('contractValue').value);
-            const subAmount = parseNumber(document.getElementById('subAmount').value);
-            const subName = document.getElementById('subName').value || '[Subcontractor Name]';
-            const subContactName = document.getElementById('subContactName').value || '[Contact Name]';
-            const subContactEmail = document.getElementById('subContactEmail').value || '[Contact Email]';
 
-            const subject = `Wrap Enrollment Notice - Subcontracted Labor - ${projectName}`;
+        // Email Wrap Enrollment with all information
+        function emailWrapEnrollment() {
+            const gcName = document.getElementById('gcName').value.trim() || '[Not Provided]';
+            const gcContact = document.getElementById('gcContact').value.trim();
+            const projectName = document.getElementById('projectName').value || '[Project Name]';
+            const projectAddress = document.getElementById('projectAddress').value.trim();
+            const startDate = document.getElementById('startDate').value;
+            const stateSelect = document.getElementById('state');
+            let state = stateSelect.value;
+            let stateFull = '';
+            
+            if (state === 'other') {
+                const otherState = document.getElementById('otherStateInput').value;
+                state = otherState ? otherState.toUpperCase() : '[Other State]';
+                stateFull = state;
+            } else if (!state) {
+                state = '[State]';
+                stateFull = state;
+            } else {
+                stateFull = stateNames[state] ? stateNames[state] + ' (' + state + ')' : state;
+            }
+            
+            const contractValue = parseNumber(document.getElementById('contractValue').value);
+            const laborScope = document.getElementById('laborScope').value;
+            const payroll = parseNumber(document.getElementById('payroll').value);
+            const includeOP = document.getElementById('includeOP').checked;
+
+            // Get calculated values
+            const wc = document.getElementById('wcResult').textContent;
+            const gl = document.getElementById('glResult').textContent;
+            const umbrella = document.getElementById('umbrellaResult').textContent;
+            const subtotal = document.getElementById('subtotalResult').textContent;
+            const op = document.getElementById('opResult').textContent;
+            const total = document.getElementById('totalResult').textContent;
+
+            // Get subcontractor info if applicable
+            let subcontractorInfo = '';
+            if (laborScope === 'subcontracted') {
+                const subAmount = parseNumber(document.getElementById('subAmount').value);
+                const subName = document.getElementById('subName').value || '[Not Provided]';
+                const subContactName = document.getElementById('subContactName').value || '[Not Provided]';
+                const subContactEmail = document.getElementById('subContactEmail').value || '[Not Provided]';
+
+                subcontractorInfo = `
+
+SUBCONTRACTOR INFO:
+- Company: ${subName}
+- Labor Amount: $${subAmount.toLocaleString()}
+- Contact: ${subContactName}
+- Email: ${subContactEmail}`;
+            }
+
+            // Format labor scope for display
+            const laborScopeDisplay = {
+                'none': 'None (Delivery/Supply Only)',
+                'subcontracted': 'Subcontracted',
+                'self': 'Self-Performed Crews'
+            }[laborScope] || laborScope;
+
+            // Format start date
+            let startDateDisplay = '[Not Specified]';
+            if (startDate) {
+                const date = new Date(startDate + 'T00:00:00');
+                startDateDisplay = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            }
+
+            const subject = `Wrap Enrollment Request - ${projectName} (${state === '[State]' ? 'State TBD' : stateFull})`;
 
             const body = `Hi Wrap Enrollment Team,
 
-I'm submitting a bid that includes subcontracted labor and wanted to notify you for wrap enrollment coordination.
+Requesting enrollment for the project below. Deduction details included.
 
-PROJECT DETAILS:
-- Project Name: ${projectName}
-- State: ${state}
+----------------------------------------------
+GC / CUSTOMER
+----------------------------------------------
+- GC/Customer: ${gcName}${gcContact ? '\n- Contact: ' + gcContact : ''}
+
+----------------------------------------------
+PROJECT DETAILS
+----------------------------------------------
+- Project Name: ${projectName}${projectAddress ? '\n- Address: ' + projectAddress : ''}
+- State: ${stateFull}
+- Expected Start Date: ${startDateDisplay}
 - Contract Value: $${contractValue.toLocaleString()}
+- Labor Scope: ${laborScopeDisplay}${laborScope === 'self' ? '\n- Estimated Payroll: $' + payroll.toLocaleString() : ''}${subcontractorInfo}
 
-SUBCONTRACTOR INFORMATION:
-- Subcontracted Labor Amount: $${subAmount.toLocaleString()}
-- Subcontractor Company: ${subName}
-- Contact Name: ${subContactName}
-- Contact Email: ${subContactEmail}
+----------------------------------------------
+INSURANCE DEDUCTION (CALCULATED)
+----------------------------------------------
+- Workers' Comp (WC): ${wc}
+- General Liability (GL): ${gl}
+- Umbrella/Excess: ${umbrella}
+- Subtotal: ${subtotal}${includeOP ? '\n- O&P (15%): ' + op : ''}
+- TOTAL DEDUCTION: ${total}
 
-Please let me know if you need any additional information for enrollment.
+Let me know if you need anything else to get this enrolled.
 
 Thanks`;
             
