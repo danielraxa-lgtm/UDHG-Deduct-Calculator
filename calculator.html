@@ -295,6 +295,30 @@
             height: 18px;
             cursor: pointer;
         }
+
+        .rate-info {
+            background: #e8f4f8;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+        }
+
+        .rate-info h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .rate-info p {
+            margin: 4px 0;
+            color: #555;
+        }
+
+        .rate-info .effective-rate {
+            font-weight: 600;
+            color: #27ae60;
+        }
     </style>
 </head>
 <body>
@@ -304,14 +328,14 @@
     
     <div class="header">
         <h1>Insurance Cost Worksheet Calculator</h1>
-        <div class="subtitle">OCIP/CCIP Deduction Estimator for Bid Preparation</div>
+        <div class="subtitle">OCIP/CCIP Deduction Estimator for Bid Preparation | Updated Feb 2026</div>
     </div>
     
     <div class="container">
         <a href="https://wrapenrollmentguidetest-1-draft.netlify.app/" class="btn btn-back">← Back to Insurance Hub</a>
         
         <div class="info-box">
-            <strong>Purpose:</strong> This calculator is intended for estimating insurance deductions during the bid process, typically prior to any contracts being signed. Use it to calculate OCIP/CCIP credits for your bid pricing.
+            <strong>Purpose:</strong> This calculator is intended for estimating insurance deductions during the bid process, typically prior to any contracts being signed. Use it to calculate OCIP/CCIP credits for your bid pricing. <strong>Note:</strong> Large deductible factors are applied automatically for applicable states.
         </div>
         
         <div class="calc-grid">
@@ -329,12 +353,15 @@
                         <option value="">Select State...</option>
                         <option value="AZ">Arizona (AZ)</option>
                         <option value="CO">Colorado (CO)</option>
+                        <option value="CT">Connecticut (CT)</option>
                         <option value="FL">Florida (FL)</option>
+                        <option value="MA">Massachusetts (MA)</option>
                         <option value="MD">Maryland (MD)</option>
                         <option value="MI">Michigan (MI)</option>
                         <option value="NJ">New Jersey (NJ)</option>
                         <option value="NY">New York (NY)</option>
                         <option value="PA">Pennsylvania (PA)</option>
+                        <option value="RI">Rhode Island (RI)</option>
                         <option value="TX">Texas (TX)</option>
                     </select>
                 </div>
@@ -358,6 +385,15 @@
                     <label for="payroll">Estimated Self-Performed Payroll ($)</label>
                     <input type="text" id="payroll" placeholder="e.g., 100,000" oninput="formatNumberInput(this); calculate()">
                     <small>Use labor COST (payroll), not labor sell!</small>
+                </div>
+                
+                <!-- Rate Info Box -->
+                <div class="rate-info" id="rateInfoBox" style="display: none;">
+                    <h4>📊 Rate Breakdown for <span id="rateState"></span></h4>
+                    <p>Base WC Rate (5102): <span id="displayBaseRate"></span> per $100</p>
+                    <p>EMR: <span id="displayEMR"></span></p>
+                    <p>Large Deductible Factor: <span id="displayLDF"></span></p>
+                    <p class="effective-rate">Effective WC Rate: <span id="displayEffectiveRate"></span> per $100</p>
                 </div>
                 
                 <!-- Subcontractor Section -->
@@ -442,34 +478,84 @@
     <div class="footer">
         <div class="developer">Developed by Daniel Raxa</div>
         <p>For internal bid preparation use only. Contact wrap.enrollment@myfbm.com for enrollment questions.</p>
+        <p style="margin-top: 10px; font-size: 0.8rem;">Last Updated: February 2026 | Policy Year 2025-26</p>
     </div>
     
     <script>
-        // WC Rates by state (base rate per $100 of payroll)
+        // =========================================
+        // WC BASE RATES BY STATE (Class Code 5102 - Installation)
+        // Source: 25-26 WC Policy Endorsements
+        // =========================================
         const wcRates = {
-            'AZ': 3.31, 'CO': 3.29, 'FL': 5.33, 'MD': 4.09, 'MI': 7.54,
-            'NJ': 6.28, 'NY': 11.17, 'PA': 6.43, 'TX': 2.15
+            'AZ': 3.31,
+            'CO': 3.29,
+            'CT': 4.61,   // From endorsement - Door/Window Installation
+            'FL': 5.33,
+            'MA': 4.56,   // From endorsement - Door/Sash Erection Metal
+            'MD': 4.09,
+            'MI': 7.54,
+            'NJ': 6.28,
+            'NY': 11.17,
+            'PA': 6.43,
+            'RI': 3.54,   // From endorsement - Door/Window Installation
+            'TX': 2.15
         };
 
+        // =========================================
+        // LARGE DEDUCTIBLE FACTORS BY STATE
+        // Source: 25-26 WC Policy Rating Pages
+        // $500K Deductible Program
+        // =========================================
+        const ldFactors = {
+            'AZ': 1.0,    // No LD factor on file
+            'CO': 1.0,    // No LD factor on file
+            'CT': 0.0832, // From CT rating page (code 9663)
+            'FL': 1.0,    // No LD factor on file
+            'MA': 1.0,    // MA has no large deductible - different program structure
+            'MD': 1.0,    // No LD factor on file
+            'MI': 1.0,    // No LD factor on file
+            'NJ': 1.0,    // No LD factor on file
+            'NY': 1.0,    // No LD factor on file
+            'PA': 1.0,    // No LD factor on file
+            'RI': 0.0548, // From RI rating page (code 9664)
+            'TX': 1.0     // No LD factor on file
+        };
+
+        // =========================================
+        // EMR (EXPERIENCE MODIFICATION RATE) BY STATE
+        // Source: 25-26 WC Policy Rating Pages
+        // =========================================
+        const emrFactors = {
+            'AZ': 1.0,
+            'CO': 1.0,
+            'CT': 1.01,   // From CT rating page
+            'FL': 1.0,
+            'MA': 1.01,   // From MA rating page
+            'MD': 1.0,
+            'MI': 1.0,
+            'NJ': 1.0,
+            'NY': 1.0,
+            'PA': 1.0,
+            'RI': 1.01,   // From RI rating page
+            'TX': 1.0
+        };
+
+        // GL and Umbrella rates (per $1,000 of contract value)
         const glRate = 0.1506;
         const umbrellaRate = 0.36691;
 
         // Format number input with commas as user types
         function formatNumberInput(input) {
-            // Get cursor position
             const cursorPos = input.selectionStart;
             const oldLength = input.value.length;
 
-            // Remove non-numeric characters except decimal
             let value = input.value.replace(/[^0-9.]/g, '');
 
-            // Handle decimal numbers
             const parts = value.split('.');
             parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
             input.value = parts.join('.');
 
-            // Adjust cursor position
             const newLength = input.value.length;
             const diff = newLength - oldLength;
             input.setSelectionRange(cursorPos + diff, cursorPos + diff);
@@ -512,18 +598,42 @@
 
             let wc = 0, gl = 0, umbrella = 0;
 
+            // GL and Umbrella based on contract value
             gl = (contractValue / 1000) * glRate;
             umbrella = (contractValue / 1000) * umbrellaRate;
 
+            // WC calculation with Large Deductible Factor and EMR
+            const rateInfoBox = document.getElementById('rateInfoBox');
+            
             if (laborScope === 'self' && state && wcRates[state]) {
-                wc = (payroll / 100) * wcRates[state];
+                const baseRate = wcRates[state];
+                const ldFactor = ldFactors[state] || 1.0;
+                const emr = emrFactors[state] || 1.0;
+                
+                // Calculate effective rate
+                const effectiveRate = baseRate * emr * ldFactor;
+                
+                // Calculate WC deduction
+                wc = (payroll / 100) * effectiveRate;
+                
+                // Display rate breakdown
+                rateInfoBox.style.display = 'block';
+                document.getElementById('rateState').textContent = state;
+                document.getElementById('displayBaseRate').textContent = baseRate.toFixed(3);
+                document.getElementById('displayEMR').textContent = emr.toFixed(2);
+                document.getElementById('displayLDF').textContent = ldFactor < 1 ? ldFactor.toFixed(4) + ' (' + ((1 - ldFactor) * 100).toFixed(2) + '% credit)' : 'N/A (1.0)';
+                document.getElementById('displayEffectiveRate').textContent = effectiveRate.toFixed(4);
+            } else {
+                rateInfoBox.style.display = 'none';
             }
 
+            // Round to whole dollars
             wc = Math.round(wc);
             gl = Math.round(gl);
             umbrella = Math.round(umbrella);
             const subtotal = wc + gl + umbrella;
 
+            // Optional O&P markup
             let op = 0;
             if (includeOP) {
                 op = Math.round(subtotal * 0.15);
@@ -531,6 +641,7 @@
 
             const total = subtotal + op;
 
+            // Update display
             document.getElementById('wcResult').textContent = '$' + wc.toLocaleString();
             document.getElementById('glResult').textContent = '$' + gl.toLocaleString();
             document.getElementById('umbrellaResult').textContent = '$' + umbrella.toLocaleString();
