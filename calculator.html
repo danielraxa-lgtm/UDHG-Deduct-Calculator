@@ -441,6 +441,7 @@
                         <option value="CO">Colorado (CO)</option>
                         <option value="CT">Connecticut (CT)</option>
                         <option value="FL">Florida (FL)</option>
+                        <option value="ME">Maine (ME)</option>
                         <option value="MA">Massachusetts (MA)</option>
                         <option value="MD">Maryland (MD)</option>
                         <option value="MI">Michigan (MI)</option>
@@ -453,7 +454,7 @@
                     </select>
                     <div class="other-state-group" id="otherStateGroup">
                         <label for="otherStateInput">Enter State</label>
-                        <input type="text" id="otherStateInput" placeholder="e.g., CA, WA, NV" oninput="calculate()">
+                        <input type="text" id="otherStateInput" placeholder="e.g., CA, WA, NV" oninput="updateClassCodeOptions(); calculate()">
                     </div>
                 </div>
                 
@@ -471,6 +472,15 @@
                         <option value="self">Self-Performed Crews</option>
                     </select>
                 </div>
+
+                <div class="form-group" id="classCodeGroup" style="display: none;">
+                    <label for="classCode">WC Class Code</label>
+                    <select id="classCode" onchange="calculate()">
+                        <option value="5102">5102 - Installation</option>
+                        <option value="8235" id="classCode8235" hidden>8235 - Supply Only (ME)</option>
+                    </select>
+                    <small id="classCodeHelp">Use class code 5102 for installation payroll.</small>
+                </div>
                 
                 <div class="form-group" id="payrollGroup" style="display: none;">
                     <label for="payroll">Estimated Self-Performed Payroll ($)</label>
@@ -481,7 +491,7 @@
                 <!-- Rate Info Box -->
                 <div class="rate-info" id="rateInfoBox" style="display: none;">
                     <h4>📊 Rate Breakdown for <span id="rateState"></span></h4>
-                    <p>Base WC Rate (5102): <span id="displayBaseRate"></span> per $100</p>
+                    <p>Base WC Rate (<span id="displayClassCode">5102</span>): <span id="displayBaseRate"></span> per $100</p>
                     <p>EMR: <span id="displayEMR"></span></p>
                     <p>Large Deductible Factor: <span id="displayLDF"></span></p>
                     <p class="effective-rate">Effective WC Rate: <span id="displayEffectiveRate"></span> per $100</p>
@@ -587,6 +597,7 @@
             'CO': 3.29,
             'CT': 4.61,   // From endorsement - Door/Window Installation
             'FL': 5.33,
+            'ME': 2.78,   // Maine installation (self-performed labor)
             'MA': 4.56,   // From endorsement - Door/Sash Erection Metal
             'MD': 4.09,
             'MI': 7.54,
@@ -595,6 +606,13 @@
             'PA': 6.43,
             'RI': 3.54,   // From endorsement - Door/Window Installation
             'TX': 2.15
+        };
+
+        // WC BASE RATES FOR SUPPLY-ONLY PAYROLL CLASS CODES
+        // Source: 25-26 WC Policy Endorsements
+        // =========================================
+        const wcSupplyOnlyRates = {
+            'ME': 3.04    // Maine class code 8235 (supply only)
         };
 
         // =========================================
@@ -607,6 +625,7 @@
             'CO': 1.0,    // No LD factor on file
             'CT': 0.0832, // From CT rating page (code 9663)
             'FL': 1.0,    // No LD factor on file
+            'ME': 1.0,    // Pending update; currently aligned with prior default behavior
             'MA': 1.0,    // MA has no large deductible - different program structure
             'MD': 1.0,    // No LD factor on file
             'MI': 1.0,    // No LD factor on file
@@ -626,6 +645,7 @@
             'CO': 1.0,
             'CT': 1.01,   // From CT rating page
             'FL': 1.0,
+            'ME': 0.95,   // Maine EMR update
             'MA': 1.01,   // From MA rating page
             'MD': 1.0,
             'MI': 1.0,
@@ -639,7 +659,7 @@
         // State full names for emails
         const stateNames = {
             'AZ': 'Arizona', 'CO': 'Colorado', 'CT': 'Connecticut',
-            'FL': 'Florida', 'MA': 'Massachusetts', 'MD': 'Maryland',
+            'FL': 'Florida', 'ME': 'Maine', 'MA': 'Massachusetts', 'MD': 'Maryland',
             'MI': 'Michigan', 'NJ': 'New Jersey', 'NY': 'New York',
             'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'TX': 'Texas'
         };
@@ -682,6 +702,8 @@
                 otherStateGroup.classList.remove('show');
                 document.getElementById('otherStateInput').value = '';
             }
+
+            updateClassCodeOptions();
             
             calculate();
         }
@@ -693,6 +715,51 @@
                 return document.getElementById('otherStateInput').value.toUpperCase();
             }
             return stateSelect.value;
+        }
+
+        function getSelectedClassCode(state, laborScope) {
+            if (laborScope !== 'self') {
+                return '';
+            }
+
+            const classCodeSelect = document.getElementById('classCode');
+            if (!classCodeSelect) {
+                return '5102';
+            }
+
+            if (state === 'ME' && classCodeSelect.value === '8235') {
+                return '8235';
+            }
+
+            return '5102';
+        }
+
+        function updateClassCodeOptions() {
+            const laborScope = document.getElementById('laborScope').value;
+            const state = getEffectiveState();
+            const classCodeGroup = document.getElementById('classCodeGroup');
+            const classCodeSelect = document.getElementById('classCode');
+            const classCode8235 = document.getElementById('classCode8235');
+            const classCodeHelp = document.getElementById('classCodeHelp');
+
+            if (laborScope !== 'self') {
+                classCodeGroup.style.display = 'none';
+                classCodeSelect.value = '5102';
+                return;
+            }
+
+            classCodeGroup.style.display = 'block';
+
+            const isMaine = state === 'ME';
+            classCode8235.hidden = !isMaine;
+
+            if (!isMaine && classCodeSelect.value === '8235') {
+                classCodeSelect.value = '5102';
+            }
+
+            classCodeHelp.textContent = isMaine
+                ? 'Maine supports 5102 (installation) and 8235 (supply-only payroll).'
+                : 'Use class code 5102 for installation payroll.';
         }
         
         function toggleLaborFields() {
@@ -715,6 +782,8 @@
             if (laborScope !== 'self') {
                 document.getElementById('payroll').value = '';
             }
+
+            updateClassCodeOptions();
         }
         
         function calculate() {
@@ -723,6 +792,7 @@
             const laborScope = document.getElementById('laborScope').value;
             const payroll = parseNumber(document.getElementById('payroll').value);
             const includeOP = document.getElementById('includeOP').checked;
+            const classCode = getSelectedClassCode(state, laborScope);
 
             let wc = 0, gl = 0, umbrella = 0;
 
@@ -732,9 +802,9 @@
 
             // WC calculation with Large Deductible Factor and EMR
             const rateInfoBox = document.getElementById('rateInfoBox');
+            const baseRate = classCode === '8235' ? wcSupplyOnlyRates[state] : wcRates[state];
             
-            if (laborScope === 'self' && state && wcRates[state]) {
-                const baseRate = wcRates[state];
+            if (laborScope === 'self' && state && baseRate) {
                 const ldFactor = ldFactors[state] || 1.0;
                 const emr = emrFactors[state] || 1.0;
                 
@@ -747,6 +817,7 @@
                 // Display rate breakdown
                 rateInfoBox.style.display = 'block';
                 document.getElementById('rateState').textContent = state;
+                document.getElementById('displayClassCode').textContent = classCode;
                 document.getElementById('displayBaseRate').textContent = baseRate.toFixed(3);
                 document.getElementById('displayEMR').textContent = emr.toFixed(2);
                 document.getElementById('displayLDF').textContent = ldFactor < 1 ? ldFactor.toFixed(4) + ' (' + ((1 - ldFactor) * 100).toFixed(2) + '% credit)' : 'N/A (1.0)';
@@ -805,6 +876,8 @@
             const laborScope = document.getElementById('laborScope').value;
             const payroll = parseNumber(document.getElementById('payroll').value);
             const includeOP = document.getElementById('includeOP').checked;
+            const selectedClassCode = getSelectedClassCode(state, laborScope);
+            const classCodeDisplay = selectedClassCode === '8235' ? '8235 (Supply Only)' : '5102 (Installation)';
 
             // Get calculated values
             const wc = document.getElementById('wcResult').textContent;
@@ -863,7 +936,7 @@ PROJECT DETAILS
 - State: ${stateFull}
 - Expected Start Date: ${startDateDisplay}
 - Contract Value: $${contractValue.toLocaleString()}
-- Labor Scope: ${laborScopeDisplay}${laborScope === 'self' ? '\n- Estimated Payroll: $' + payroll.toLocaleString() : ''}${subcontractorInfo}
+- Labor Scope: ${laborScopeDisplay}${laborScope === 'self' ? '\n- Estimated Payroll: $' + payroll.toLocaleString() + '\n- WC Class Code: ' + classCodeDisplay : ''}${subcontractorInfo}
 
 ----------------------------------------------
 INSURANCE DEDUCTION (CALCULATED)
@@ -881,6 +954,8 @@ Thanks`;
             const mailtoLink = `mailto:wrap.enrollment@myfbm.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
             window.location.href = mailtoLink;
         }
+
+        updateClassCodeOptions();
     </script>
 </body>
 </html>
