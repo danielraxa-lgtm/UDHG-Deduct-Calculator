@@ -330,6 +330,31 @@
             color: #27ae60;
         }
 
+        .no-rates-note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+
+        .no-rates-note.show {
+            display: block;
+        }
+
+        .no-rates-note strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .no-rates-note a {
+            color: #856404;
+            font-weight: 600;
+        }
+
         .labor-note {
             background: #fff8e1;
             border: 1px solid #ffca28;
@@ -452,48 +477,52 @@
                     <label for="state">Project State</label>
                     <select id="state" onchange="handleStateChange()">
                         <option value="">Select State...</option>
-                        <option value="AL">Alabama (AL)</option>
-                        <option value="AR">Arkansas (AR)</option>
-                        <option value="AZ">Arizona (AZ)</option>
-                        <option value="CA">California (CA)</option>
-                        <option value="CO">Colorado (CO)</option>
-                        <option value="CT">Connecticut (CT)</option>
-                        <option value="FL">Florida (FL)</option>
-                        <option value="GA">Georgia (GA)</option>
-                        <option value="HI">Hawaii (HI)</option>
-                        <option value="IA">Iowa (IA)</option>
-                        <option value="ID">Idaho (ID)</option>
-                        <option value="IL">Illinois (IL)</option>
-                        <option value="IN">Indiana (IN)</option>
-                        <option value="KS">Kansas (KS)</option>
-                        <option value="KY">Kentucky (KY)</option>
-                        <option value="LA">Louisiana (LA)</option>
-                        <option value="MA">Massachusetts (MA)</option>
-                        <option value="MD">Maryland (MD)</option>
-                        <option value="ME">Maine (ME)</option>
-                        <option value="MI">Michigan (MI)</option>
-                        <option value="MN">Minnesota (MN)</option>
-                        <option value="MO">Missouri (MO)</option>
-                        <option value="MS">Mississippi (MS)</option>
-                        <option value="MT">Montana (MT)</option>
-                        <option value="NC">North Carolina (NC)</option>
-                        <option value="NE">Nebraska (NE)</option>
-                        <option value="NH">New Hampshire (NH)</option>
-                        <option value="NJ">New Jersey (NJ)</option>
-                        <option value="NM">New Mexico (NM)</option>
-                        <option value="NV">Nevada (NV)</option>
-                        <option value="NY">New York (NY)</option>
-                        <option value="OK">Oklahoma (OK)</option>
-                        <option value="OR">Oregon (OR)</option>
-                        <option value="PA">Pennsylvania (PA)</option>
-                        <option value="RI">Rhode Island (RI)</option>
-                        <option value="SC">South Carolina (SC)</option>
-                        <option value="SD">South Dakota (SD)</option>
-                        <option value="TN">Tennessee (TN)</option>
-                        <option value="TX">Texas (TX)</option>
-                        <option value="UT">Utah (UT)</option>
-                        <option value="VA">Virginia (VA)</option>
-                        <option value="WV">West Virginia (WV)</option>
+                        <optgroup label="States with WC Installation Rates">
+                            <option value="AZ">Arizona (AZ)</option>
+                            <option value="CO">Colorado (CO)</option>
+                            <option value="CT">Connecticut (CT)</option>
+                            <option value="FL">Florida (FL)</option>
+                            <option value="MA">Massachusetts (MA)</option>
+                            <option value="MD">Maryland (MD)</option>
+                            <option value="ME">Maine (ME)</option>
+                            <option value="MI">Michigan (MI)</option>
+                            <option value="NJ">New Jersey (NJ)</option>
+                            <option value="NY">New York (NY)</option>
+                            <option value="PA">Pennsylvania (PA)</option>
+                            <option value="RI">Rhode Island (RI)</option>
+                            <option value="TN">Tennessee (TN)</option>
+                            <option value="TX">Texas (TX)</option>
+                        </optgroup>
+                        <optgroup label="Other Project States">
+                            <option value="AL">Alabama (AL)</option>
+                            <option value="AR">Arkansas (AR)</option>
+                            <option value="CA">California (CA)</option>
+                            <option value="GA">Georgia (GA)</option>
+                            <option value="HI">Hawaii (HI)</option>
+                            <option value="IA">Iowa (IA)</option>
+                            <option value="ID">Idaho (ID)</option>
+                            <option value="IL">Illinois (IL)</option>
+                            <option value="IN">Indiana (IN)</option>
+                            <option value="KS">Kansas (KS)</option>
+                            <option value="KY">Kentucky (KY)</option>
+                            <option value="LA">Louisiana (LA)</option>
+                            <option value="MN">Minnesota (MN)</option>
+                            <option value="MO">Missouri (MO)</option>
+                            <option value="MS">Mississippi (MS)</option>
+                            <option value="MT">Montana (MT)</option>
+                            <option value="NC">North Carolina (NC)</option>
+                            <option value="NE">Nebraska (NE)</option>
+                            <option value="NH">New Hampshire (NH)</option>
+                            <option value="NM">New Mexico (NM)</option>
+                            <option value="NV">Nevada (NV)</option>
+                            <option value="OK">Oklahoma (OK)</option>
+                            <option value="OR">Oregon (OR)</option>
+                            <option value="SC">South Carolina (SC)</option>
+                            <option value="SD">South Dakota (SD)</option>
+                            <option value="UT">Utah (UT)</option>
+                            <option value="VA">Virginia (VA)</option>
+                            <option value="WV">West Virginia (WV)</option>
+                        </optgroup>
                         <option value="other">Other State</option>
                     </select>
                     <div class="other-state-group" id="otherStateGroup">
@@ -599,13 +628,18 @@
                     </div>
                 </div>
 
+                <div class="no-rates-note" id="noRatesNote">
+                    <strong>No WC installation rates on file for this state.</strong>
+                    If your labor is only based off cut labor (usually insulation), WC rates may not apply. However, if you do install work and there are no rates tied to your state, please reach out to <a href="mailto:wrap.enrollment@myfbm.com">wrap.enrollment@myfbm.com</a>.
+                </div>
+
                 <div class="op-checkbox">
                     <label>
                         <input type="checkbox" id="includeOP" onchange="calculate()">
                         Include 15% Overhead & Profit
                     </label>
                 </div>
-                
+
                 <div class="alert" id="subAlert">
                     <strong>Note:</strong> Labor is subcontracted. WC exposure belongs to the subcontractor. Please complete the subcontractor information and notify the Wrap Enrollment team.
                 </div>
@@ -638,48 +672,20 @@
         // Source: 25-26 WC Policy Endorsements
         // =========================================
         const wcInstallRates = {
-            'AL': { '5102': 3.650 },
-            'AR': { '5102': 1.890 },
-            'AZ': { '5102': 3.270 },
-            'CA': { '5102': 9.970 },
-            'CO': { '5102': 4.020 },
-            'CT': { '5102': 4.510 },
+            'AZ': { '5102': 3.31 },
+            'CO': { '5102': 3.29 },
+            'CT': { '5102': 4.61 },
             'FL': { '5102': 5.33 },
-            'GA': { '5102': 4.030 },
-            'HI': { '5102': 7.540 },
-            'IA': { '5102': 3.050 },
-            'ID': { '5102': 2.890 },
-            'IL': { '5102': 3.900 },
-            'IN': { '5102': 1.990 },
-            'KS': { '5102': 2.940 },
-            'KY': { '5102': 2.100 },
-            'LA': { '5102': 3.820 },
-            'MA': { '5102': 4.56 },
-            'MD': { '5102': 2.710 },
             'ME': { '5102': 2.78 },
-            'MI': { '5102': 2.130, '5146': 2.140 },
-            'MN': { '5102': 2.600 },
-            'MO': { '5102': 5.320 },
-            'MS': { '5102': 2.900 },
-            'MT': { '5102': 4.010 },
-            'NC': { '5102': 3.090 },
-            'NE': { '5102': 2.710 },
-            'NH': { '5102': 4.420 },
+            'MA': { '5102': 4.56 },
+            'MD': { '5102': 4.09 },
+            'MI': { '5102': 2.190, '5146': 2.140 },
             'NJ': { '5103': 6.28 },
-            'NM': { '5102': 3.060 },
-            'NV': { '5102': 5.110 },
-            'NY': { '5102': 5.140 },
-            'OK': { '5102': 3.670 },
-            'OR': { '5102': 2.620 },
+            'NY': { '5102': 11.17 },
             'PA': { '658': 6.43 },
-            'RI': { '5102': 4.480 },
-            'SC': { '5102': 3.860 },
-            'SD': { '5102': 3.530 },
-            'TN': { '5102': 2.580, '5146': 1.910 },
-            'TX': { '5102': 2.15 },
-            'UT': { '5102': 1.860 },
-            'VA': { '5102': 2.590 },
-            'WV': { '5102': 1.320 }
+            'RI': { '5102': 3.54 },
+            'TN': { '5146': 1.910 },
+            'TX': { '5102': 2.15 }
         };
 
         // Class code descriptions
@@ -726,7 +732,7 @@
             'MA': 0,      // No LD factor - different program structure
             'MD': 0.0548,
             'ME': 0,      // No LD factor on file
-            'MI': 0.0833,
+            'MI': 0.11,
             'MN': 0.2094,
             'MO': 0.0832,
             'MS': 0.0835,
@@ -744,7 +750,7 @@
             'RI': 0.0548,
             'SC': 0.0832,
             'SD': 0.0832,
-            'TN': 0.0832,
+            'TN': 0,      // No LD factor on file
             'TX': 0.08,
             'UT': 0.0548,
             'VA': 0.0832,
@@ -971,6 +977,7 @@
 
             // WC calculation with Large Deductible Factor and EMR
             const rateInfoBox = document.getElementById('rateInfoBox');
+            const noRatesNote = document.getElementById('noRatesNote');
             let baseRate;
             if (classCode === '8235') {
                 baseRate = wcSupplyOnlyRates[state];
@@ -985,12 +992,13 @@
 
                 // Calculate effective rate (LDF is a credit percentage)
                 const effectiveRate = baseRate * emr * (1 - ldFactor);
-                
+
                 // Calculate WC deduction
                 wc = (payroll / 100) * effectiveRate;
-                
+
                 // Display rate breakdown
                 rateInfoBox.style.display = 'block';
+                noRatesNote.classList.remove('show');
                 document.getElementById('rateState').textContent = state;
                 document.getElementById('displayClassCode').textContent = classCode;
                 document.getElementById('displayBaseRate').textContent = baseRate.toFixed(3);
@@ -999,6 +1007,13 @@
                 document.getElementById('displayEffectiveRate').textContent = effectiveRate.toFixed(4);
             } else {
                 rateInfoBox.style.display = 'none';
+                // Show no-rates note when self-perform is selected but state has no WC rates
+                const hasNoRates = laborScope === 'self' && state && !wcInstallRates[state];
+                if (hasNoRates) {
+                    noRatesNote.classList.add('show');
+                } else {
+                    noRatesNote.classList.remove('show');
+                }
             }
 
             // Round to whole dollars
