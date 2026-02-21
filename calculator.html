@@ -612,8 +612,10 @@
         // Source: 25-26 WC Policy Endorsements
         // =========================================
         const wcSupplyOnlyRates = {
+            'CT': 3.48,   // Connecticut class code 8235 (supply only)
             'MA': 2.76,   // Massachusetts class code 8235 (supply only)
-            'ME': 3.04    // Maine class code 8235 (supply only)
+            'ME': 3.04,   // Maine class code 8235 (supply only)
+            'RI': 3.82    // Rhode Island class code 8235 (supply only)
         };
 
         // =========================================
@@ -644,7 +646,7 @@
         const emrFactors = {
             'AZ': 1.0,
             'CO': 1.0,
-            'CT': 1.01,   // From CT rating page
+            'CT': 0.95,   // Connecticut EMR update
             'FL': 1.0,
             'ME': 0.95,   // Maine EMR update
             'MA': 1.01,   // From MA rating page
@@ -653,7 +655,7 @@
             'NJ': 1.0,
             'NY': 1.0,
             'PA': 1.0,
-            'RI': 1.01,   // From RI rating page
+            'RI': 0.95,   // Rhode Island EMR update
             'TX': 1.0
         };
 
