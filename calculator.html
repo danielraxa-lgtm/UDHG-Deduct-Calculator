@@ -477,7 +477,7 @@
                     <label for="classCode">WC Class Code</label>
                     <select id="classCode" onchange="calculate()">
                         <option value="5102">5102 - Installation</option>
-                        <option value="8235" id="classCode8235" hidden>8235 - Supply Only (ME)</option>
+                        <option value="8235" id="classCode8235" hidden>8235 - Supply Only</option>
                     </select>
                     <small id="classCodeHelp">Use class code 5102 for installation payroll.</small>
                 </div>
@@ -612,6 +612,7 @@
         // Source: 25-26 WC Policy Endorsements
         // =========================================
         const wcSupplyOnlyRates = {
+            'MA': 2.76,   // Massachusetts class code 8235 (supply only)
             'ME': 3.04    // Maine class code 8235 (supply only)
         };
 
@@ -727,7 +728,8 @@
                 return '5102';
             }
 
-            if (state === 'ME' && classCodeSelect.value === '8235') {
+            const supportsSupplyOnlyClassCode = Object.prototype.hasOwnProperty.call(wcSupplyOnlyRates, state);
+            if (supportsSupplyOnlyClassCode && classCodeSelect.value === '8235') {
                 return '8235';
             }
 
@@ -750,15 +752,15 @@
 
             classCodeGroup.style.display = 'block';
 
-            const isMaine = state === 'ME';
-            classCode8235.hidden = !isMaine;
+            const supportsSupplyOnlyClassCode = Object.prototype.hasOwnProperty.call(wcSupplyOnlyRates, state);
+            classCode8235.hidden = !supportsSupplyOnlyClassCode;
 
-            if (!isMaine && classCodeSelect.value === '8235') {
+            if (!supportsSupplyOnlyClassCode && classCodeSelect.value === '8235') {
                 classCodeSelect.value = '5102';
             }
 
-            classCodeHelp.textContent = isMaine
-                ? 'Maine supports 5102 (installation) and 8235 (supply-only payroll).'
+            classCodeHelp.textContent = supportsSupplyOnlyClassCode
+                ? state + ' supports 5102 (installation) and 8235 (supply-only payroll).'
                 : 'Use class code 5102 for installation payroll.';
         }
         
