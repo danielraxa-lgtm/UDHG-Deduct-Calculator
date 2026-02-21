@@ -330,6 +330,21 @@
             color: #27ae60;
         }
 
+        .labor-note {
+            background: #fff8e1;
+            border: 1px solid #ffca28;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #6d4c00;
+        }
+
+        .labor-note a {
+            color: #6d4c00;
+            font-weight: 600;
+        }
+
         .other-state-group {
             display: none;
             margin-top: 10px;
@@ -437,20 +452,48 @@
                     <label for="state">Project State</label>
                     <select id="state" onchange="handleStateChange()">
                         <option value="">Select State...</option>
+                        <option value="AL">Alabama (AL)</option>
+                        <option value="AR">Arkansas (AR)</option>
                         <option value="AZ">Arizona (AZ)</option>
+                        <option value="CA">California (CA)</option>
                         <option value="CO">Colorado (CO)</option>
                         <option value="CT">Connecticut (CT)</option>
                         <option value="FL">Florida (FL)</option>
-                        <option value="ME">Maine (ME)</option>
+                        <option value="GA">Georgia (GA)</option>
+                        <option value="HI">Hawaii (HI)</option>
+                        <option value="IA">Iowa (IA)</option>
+                        <option value="ID">Idaho (ID)</option>
+                        <option value="IL">Illinois (IL)</option>
+                        <option value="IN">Indiana (IN)</option>
+                        <option value="KS">Kansas (KS)</option>
+                        <option value="KY">Kentucky (KY)</option>
+                        <option value="LA">Louisiana (LA)</option>
                         <option value="MA">Massachusetts (MA)</option>
                         <option value="MD">Maryland (MD)</option>
+                        <option value="ME">Maine (ME)</option>
                         <option value="MI">Michigan (MI)</option>
+                        <option value="MN">Minnesota (MN)</option>
+                        <option value="MO">Missouri (MO)</option>
+                        <option value="MS">Mississippi (MS)</option>
+                        <option value="MT">Montana (MT)</option>
+                        <option value="NC">North Carolina (NC)</option>
+                        <option value="NE">Nebraska (NE)</option>
+                        <option value="NH">New Hampshire (NH)</option>
                         <option value="NJ">New Jersey (NJ)</option>
+                        <option value="NM">New Mexico (NM)</option>
+                        <option value="NV">Nevada (NV)</option>
                         <option value="NY">New York (NY)</option>
+                        <option value="OK">Oklahoma (OK)</option>
+                        <option value="OR">Oregon (OR)</option>
                         <option value="PA">Pennsylvania (PA)</option>
                         <option value="RI">Rhode Island (RI)</option>
+                        <option value="SC">South Carolina (SC)</option>
+                        <option value="SD">South Dakota (SD)</option>
                         <option value="TN">Tennessee (TN)</option>
                         <option value="TX">Texas (TX)</option>
+                        <option value="UT">Utah (UT)</option>
+                        <option value="VA">Virginia (VA)</option>
+                        <option value="WV">West Virginia (WV)</option>
                         <option value="other">Other State</option>
                     </select>
                     <div class="other-state-group" id="otherStateGroup">
@@ -472,6 +515,9 @@
                         <option value="subcontracted">Subcontracted</option>
                         <option value="self">Self-Performed Crews</option>
                     </select>
+                    <div class="labor-note">
+                        <strong>Please note:</strong> Only self-install labor is counted in the WC calculation. If you're told otherwise, please reach out to <a href="mailto:wrap.enrollment@myfbm.com">wrap.enrollment@myfbm.com</a>.
+                    </div>
                 </div>
 
                 <div class="form-group" id="classCodeGroup" style="display: none;">
@@ -592,20 +638,48 @@
         // Source: 25-26 WC Policy Endorsements
         // =========================================
         const wcInstallRates = {
-            'AZ': { '5102': 3.31 },
-            'CO': { '5102': 3.29 },
-            'CT': { '5102': 4.61 },
+            'AL': { '5102': 3.650 },
+            'AR': { '5102': 1.890 },
+            'AZ': { '5102': 3.270 },
+            'CA': { '5102': 9.970 },
+            'CO': { '5102': 4.020 },
+            'CT': { '5102': 4.510 },
             'FL': { '5102': 5.33 },
-            'ME': { '5102': 2.78 },
+            'GA': { '5102': 4.030 },
+            'HI': { '5102': 7.540 },
+            'IA': { '5102': 3.050 },
+            'ID': { '5102': 2.890 },
+            'IL': { '5102': 3.900 },
+            'IN': { '5102': 1.990 },
+            'KS': { '5102': 2.940 },
+            'KY': { '5102': 2.100 },
+            'LA': { '5102': 3.820 },
             'MA': { '5102': 4.56 },
-            'MD': { '5102': 4.09 },
-            'MI': { '5102': 2.190, '5146': 2.140 },
+            'MD': { '5102': 2.710 },
+            'ME': { '5102': 2.78 },
+            'MI': { '5102': 2.130, '5146': 2.140 },
+            'MN': { '5102': 2.600 },
+            'MO': { '5102': 5.320 },
+            'MS': { '5102': 2.900 },
+            'MT': { '5102': 4.010 },
+            'NC': { '5102': 3.090 },
+            'NE': { '5102': 2.710 },
+            'NH': { '5102': 4.420 },
             'NJ': { '5103': 6.28 },
-            'NY': { '5102': 11.17 },
+            'NM': { '5102': 3.060 },
+            'NV': { '5102': 5.110 },
+            'NY': { '5102': 5.140 },
+            'OK': { '5102': 3.670 },
+            'OR': { '5102': 2.620 },
             'PA': { '658': 6.43 },
-            'RI': { '5102': 3.54 },
-            'TN': { '5146': 1.910 },
-            'TX': { '5102': 2.15 }
+            'RI': { '5102': 4.480 },
+            'SC': { '5102': 3.860 },
+            'SD': { '5102': 3.530 },
+            'TN': { '5102': 2.580, '5146': 1.910 },
+            'TX': { '5102': 2.15 },
+            'UT': { '5102': 1.860 },
+            'VA': { '5102': 2.590 },
+            'WV': { '5102': 1.320 }
         };
 
         // Class code descriptions
@@ -633,20 +707,48 @@
         // $500K Deductible Program
         // =========================================
         const ldFactors = {
+            'AL': 0.0706,
+            'AR': 0.2214,
             'AZ': 0.2737,
+            'CA': 0.0832,
             'CO': 0.0549,
             'CT': 0.0832,
             'FL': 0.2124,
-            'ME': 0,      // No LD factor on file
+            'GA': 0.054,
+            'HI': 0.202,
+            'IA': 0.2561,
+            'ID': 0.0549,
+            'IL': 0.0521,
+            'IN': 0.0548,
+            'KS': 0.0545,
+            'KY': 0.0832,
+            'LA': 0.0506,
             'MA': 0,      // No LD factor - different program structure
             'MD': 0.0548,
-            'MI': 0.11,
+            'ME': 0,      // No LD factor on file
+            'MI': 0.0833,
+            'MN': 0.2094,
+            'MO': 0.0832,
+            'MS': 0.0835,
+            'MT': 0.0832,
+            'NC': 0.2541,
+            'NE': 0.1386,
+            'NH': 0.0831,
             'NJ': 0.0829,
+            'NM': 0.0832,
+            'NV': 0.0548,
             'NY': 0.0832,
+            'OK': 0.0832,
+            'OR': 0.1658,
             'PA': 0.1931,
             'RI': 0.0548,
-            'TN': 0,      // No LD factor on file
-            'TX': 0.08
+            'SC': 0.0832,
+            'SD': 0.0832,
+            'TN': 0.0832,
+            'TX': 0.08,
+            'UT': 0.0548,
+            'VA': 0.0832,
+            'WV': 0.052
         };
 
         // =========================================
@@ -654,28 +756,66 @@
         // Source: 25-26 WC Policy Rating Pages
         // =========================================
         const emrFactors = {
+            'AL': 0.95,
+            'AR': 0.95,
             'AZ': 0.95,
+            'CA': 0.95,
             'CO': 0.95,
             'CT': 0.95,
             'FL': 0.95,
-            'ME': 0.95,
+            'GA': 0.95,
+            'HI': 0.95,
+            'IA': 0.95,
+            'ID': 0.95,
+            'IL': 0.95,
+            'IN': 0.95,
+            'KS': 0.95,
+            'KY': 0.95,
+            'LA': 0.95,
             'MA': 1.01,
             'MD': 0.95,
+            'ME': 0.95,
             'MI': 0.65,
+            'MN': 0.95,
+            'MO': 0.95,
+            'MS': 0.95,
+            'MT': 0.95,
+            'NC': 0.95,
+            'NE': 0.95,
+            'NH': 0.95,
             'NJ': 1.115,
+            'NM': 0.95,
+            'NV': 0.95,
             'NY': 1.87,
+            'OK': 0.95,
+            'OR': 0.95,
             'PA': 1.143,
             'RI': 0.95,
+            'SC': 0.95,
+            'SD': 0.95,
             'TN': 0.95,
-            'TX': 0.95
+            'TX': 0.95,
+            'UT': 0.95,
+            'VA': 0.95,
+            'WV': 0.95
         };
 
         // State full names for emails
         const stateNames = {
-            'AZ': 'Arizona', 'CO': 'Colorado', 'CT': 'Connecticut',
-            'FL': 'Florida', 'ME': 'Maine', 'MA': 'Massachusetts', 'MD': 'Maryland',
-            'MI': 'Michigan', 'NJ': 'New Jersey', 'NY': 'New York',
-            'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'TN': 'Tennessee', 'TX': 'Texas'
+            'AL': 'Alabama', 'AR': 'Arkansas', 'AZ': 'Arizona',
+            'CA': 'California', 'CO': 'Colorado', 'CT': 'Connecticut',
+            'FL': 'Florida', 'GA': 'Georgia', 'HI': 'Hawaii',
+            'IA': 'Iowa', 'ID': 'Idaho', 'IL': 'Illinois',
+            'IN': 'Indiana', 'KS': 'Kansas', 'KY': 'Kentucky',
+            'LA': 'Louisiana', 'MA': 'Massachusetts', 'MD': 'Maryland',
+            'ME': 'Maine', 'MI': 'Michigan', 'MN': 'Minnesota',
+            'MO': 'Missouri', 'MS': 'Mississippi', 'MT': 'Montana',
+            'NC': 'North Carolina', 'NE': 'Nebraska', 'NH': 'New Hampshire',
+            'NJ': 'New Jersey', 'NM': 'New Mexico', 'NV': 'Nevada',
+            'NY': 'New York', 'OK': 'Oklahoma', 'OR': 'Oregon',
+            'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+            'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas',
+            'UT': 'Utah', 'VA': 'Virginia', 'WV': 'West Virginia'
         };
 
         // GL and Umbrella rates (per $1,000 of contract value)
