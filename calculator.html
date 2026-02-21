@@ -633,20 +633,20 @@
         // $500K Deductible Program
         // =========================================
         const ldFactors = {
-            'AZ': 1.0,    // No LD factor on file
-            'CO': 1.0,    // No LD factor on file
-            'CT': 0.0832, // From CT rating page (code 9663)
-            'FL': 1.0,    // No LD factor on file
-            'ME': 1.0,    // Pending update; currently aligned with prior default behavior
-            'MA': 1.0,    // MA has no large deductible - different program structure
-            'MD': 1.0,    // No LD factor on file
-            'MI': 1.0,    // No LD factor on file
-            'NJ': 1.0,    // No LD factor on file
-            'NY': 1.0,    // No LD factor on file
-            'PA': 1.0,    // No LD factor on file
-            'RI': 0.0548, // From RI rating page (code 9664)
-            'TN': 1.0,    // No LD factor on file
-            'TX': 1.0     // No LD factor on file
+            'AZ': 0.2737,
+            'CO': 0.0549,
+            'CT': 0.0832,
+            'FL': 0.2124,
+            'ME': 0,      // No LD factor on file
+            'MA': 0,      // No LD factor - different program structure
+            'MD': 0.0548,
+            'MI': 0.11,
+            'NJ': 0.0829,
+            'NY': 0.0832,
+            'PA': 0.1931,
+            'RI': 0.0548,
+            'TN': 0,      // No LD factor on file
+            'TX': 0.08
         };
 
         // =========================================
@@ -654,20 +654,20 @@
         // Source: 25-26 WC Policy Rating Pages
         // =========================================
         const emrFactors = {
-            'AZ': 1.0,
-            'CO': 1.0,
-            'CT': 0.95,   // Connecticut EMR update
-            'FL': 1.0,
-            'ME': 0.95,   // Maine EMR update
-            'MA': 1.01,   // From MA rating page
-            'MD': 1.0,
-            'MI': 1.0,
-            'NJ': 1.0,
-            'NY': 1.0,
-            'PA': 1.0,
-            'RI': 0.95,   // Rhode Island EMR update
+            'AZ': 0.95,
+            'CO': 0.95,
+            'CT': 0.95,
+            'FL': 0.95,
+            'ME': 0.95,
+            'MA': 1.01,
+            'MD': 0.95,
+            'MI': 0.65,
+            'NJ': 1.115,
+            'NY': 1.87,
+            'PA': 1.143,
+            'RI': 0.95,
             'TN': 1.0,
-            'TX': 1.0
+            'TX': 0.95
         };
 
         // State full names for emails
@@ -840,11 +840,11 @@
             }
             
             if (laborScope === 'self' && state && baseRate) {
-                const ldFactor = ldFactors[state] || 1.0;
+                const ldFactor = ldFactors[state] || 0;
                 const emr = emrFactors[state] || 1.0;
-                
-                // Calculate effective rate
-                const effectiveRate = baseRate * emr * ldFactor;
+
+                // Calculate effective rate (LDF is a credit percentage)
+                const effectiveRate = baseRate * emr * (1 - ldFactor);
                 
                 // Calculate WC deduction
                 wc = (payroll / 100) * effectiveRate;
@@ -855,7 +855,7 @@
                 document.getElementById('displayClassCode').textContent = classCode;
                 document.getElementById('displayBaseRate').textContent = baseRate.toFixed(3);
                 document.getElementById('displayEMR').textContent = emr.toFixed(2);
-                document.getElementById('displayLDF').textContent = ldFactor < 1 ? ldFactor.toFixed(4) + ' (' + ((1 - ldFactor) * 100).toFixed(2) + '% credit)' : 'N/A (1.0)';
+                document.getElementById('displayLDF').textContent = ldFactor > 0 ? ldFactor.toFixed(4) + ' (' + (ldFactor * 100).toFixed(2) + '% credit)' : 'N/A (none)';
                 document.getElementById('displayEffectiveRate').textContent = effectiveRate.toFixed(4);
             } else {
                 rateInfoBox.style.display = 'none';
