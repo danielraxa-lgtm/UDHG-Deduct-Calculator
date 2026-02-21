@@ -330,6 +330,46 @@
             color: #27ae60;
         }
 
+        .no-rates-note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+
+        .no-rates-note.show {
+            display: block;
+        }
+
+        .no-rates-note strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .no-rates-note a {
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .labor-note {
+            background: #fff8e1;
+            border: 1px solid #ffca28;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #6d4c00;
+        }
+
+        .labor-note a {
+            color: #6d4c00;
+            font-weight: 600;
+        }
+
         .other-state-group {
             display: none;
             margin-top: 10px;
@@ -437,19 +477,52 @@
                     <label for="state">Project State</label>
                     <select id="state" onchange="handleStateChange()">
                         <option value="">Select State...</option>
-                        <option value="AZ">Arizona (AZ)</option>
-                        <option value="CO">Colorado (CO)</option>
-                        <option value="CT">Connecticut (CT)</option>
-                        <option value="FL">Florida (FL)</option>
-                        <option value="ME">Maine (ME)</option>
-                        <option value="MA">Massachusetts (MA)</option>
-                        <option value="MD">Maryland (MD)</option>
-                        <option value="MI">Michigan (MI)</option>
-                        <option value="NJ">New Jersey (NJ)</option>
-                        <option value="NY">New York (NY)</option>
-                        <option value="PA">Pennsylvania (PA)</option>
-                        <option value="RI">Rhode Island (RI)</option>
-                        <option value="TX">Texas (TX)</option>
+                        <optgroup label="States with WC Installation Rates">
+                            <option value="AZ">Arizona (AZ)</option>
+                            <option value="CO">Colorado (CO)</option>
+                            <option value="CT">Connecticut (CT)</option>
+                            <option value="FL">Florida (FL)</option>
+                            <option value="MA">Massachusetts (MA)</option>
+                            <option value="MD">Maryland (MD)</option>
+                            <option value="ME">Maine (ME)</option>
+                            <option value="MI">Michigan (MI)</option>
+                            <option value="NJ">New Jersey (NJ)</option>
+                            <option value="NY">New York (NY)</option>
+                            <option value="PA">Pennsylvania (PA)</option>
+                            <option value="RI">Rhode Island (RI)</option>
+                            <option value="TN">Tennessee (TN)</option>
+                            <option value="TX">Texas (TX)</option>
+                        </optgroup>
+                        <optgroup label="Other Project States">
+                            <option value="AL">Alabama (AL)</option>
+                            <option value="AR">Arkansas (AR)</option>
+                            <option value="CA">California (CA)</option>
+                            <option value="GA">Georgia (GA)</option>
+                            <option value="HI">Hawaii (HI)</option>
+                            <option value="IA">Iowa (IA)</option>
+                            <option value="ID">Idaho (ID)</option>
+                            <option value="IL">Illinois (IL)</option>
+                            <option value="IN">Indiana (IN)</option>
+                            <option value="KS">Kansas (KS)</option>
+                            <option value="KY">Kentucky (KY)</option>
+                            <option value="LA">Louisiana (LA)</option>
+                            <option value="MN">Minnesota (MN)</option>
+                            <option value="MO">Missouri (MO)</option>
+                            <option value="MS">Mississippi (MS)</option>
+                            <option value="MT">Montana (MT)</option>
+                            <option value="NC">North Carolina (NC)</option>
+                            <option value="NE">Nebraska (NE)</option>
+                            <option value="NH">New Hampshire (NH)</option>
+                            <option value="NM">New Mexico (NM)</option>
+                            <option value="NV">Nevada (NV)</option>
+                            <option value="OK">Oklahoma (OK)</option>
+                            <option value="OR">Oregon (OR)</option>
+                            <option value="SC">South Carolina (SC)</option>
+                            <option value="SD">South Dakota (SD)</option>
+                            <option value="UT">Utah (UT)</option>
+                            <option value="VA">Virginia (VA)</option>
+                            <option value="WV">West Virginia (WV)</option>
+                        </optgroup>
                         <option value="other">Other State</option>
                     </select>
                     <div class="other-state-group" id="otherStateGroup">
@@ -471,15 +544,16 @@
                         <option value="subcontracted">Subcontracted</option>
                         <option value="self">Self-Performed Crews</option>
                     </select>
+                    <div class="labor-note">
+                        <strong>Please note:</strong> Only self-install labor is counted in the WC calculation. If you're told otherwise, please reach out to <a href="mailto:wrap.enrollment@myfbm.com">wrap.enrollment@myfbm.com</a>.
+                    </div>
                 </div>
 
                 <div class="form-group" id="classCodeGroup" style="display: none;">
                     <label for="classCode">WC Class Code</label>
                     <select id="classCode" onchange="calculate()">
-                        <option value="5102">5102 - Installation</option>
-                        <option value="8235" id="classCode8235" hidden>8235 - Supply Only</option>
                     </select>
-                    <small id="classCodeHelp">Use class code 5102 for installation payroll.</small>
+                    <small id="classCodeHelp">Select the appropriate class code.</small>
                 </div>
                 
                 <div class="form-group" id="payrollGroup" style="display: none;">
@@ -554,13 +628,18 @@
                     </div>
                 </div>
 
+                <div class="no-rates-note" id="noRatesNote">
+                    <strong>No WC installation rates on file for this state.</strong>
+                    If your labor is only based off cut labor (usually insulation), WC rates may not apply. However, if you do install work and there are no rates tied to your state, please reach out to <a href="mailto:wrap.enrollment@myfbm.com">wrap.enrollment@myfbm.com</a>.
+                </div>
+
                 <div class="op-checkbox">
                     <label>
                         <input type="checkbox" id="includeOP" onchange="calculate()">
                         Include 15% Overhead & Profit
                     </label>
                 </div>
-                
+
                 <div class="alert" id="subAlert">
                     <strong>Note:</strong> Labor is subcontracted. WC exposure belongs to the subcontractor. Please complete the subcontractor information and notify the Wrap Enrollment team.
                 </div>
@@ -589,23 +668,33 @@
     
     <script>
         // =========================================
-        // WC BASE RATES BY STATE (Class Code 5102 - Installation)
+        // WC INSTALLATION RATES BY STATE AND CLASS CODE
         // Source: 25-26 WC Policy Endorsements
         // =========================================
-        const wcRates = {
-            'AZ': 3.31,
-            'CO': 3.29,
-            'CT': 4.61,   // From endorsement - Door/Window Installation
-            'FL': 5.33,
-            'ME': 2.78,   // Maine installation (self-performed labor)
-            'MA': 4.56,   // From endorsement - Door/Sash Erection Metal
-            'MD': 4.09,
-            'MI': 7.54,
-            'NJ': 6.28,
-            'NY': 11.17,
-            'PA': 6.43,
-            'RI': 3.54,   // From endorsement - Door/Window Installation
-            'TX': 2.15
+        const wcInstallRates = {
+            'AZ': { '5102': 3.31 },
+            'CO': { '5102': 3.29 },
+            'CT': { '5102': 4.61 },
+            'FL': { '5102': 5.33 },
+            'ME': { '5102': 2.78 },
+            'MA': { '5102': 4.56 },
+            'MD': { '5102': 4.09 },
+            'MI': { '5102': 2.130, '5146': 2.140 },
+            'NJ': { '5103': 6.28 },
+            'NY': { '5102': 11.17 },
+            'PA': { '658': 6.43 },
+            'RI': { '5102': 3.54 },
+            'TN': { '5102': 2.580, '5146': 1.910 },
+            'TX': { '5102': 2.15 }
+        };
+
+        // Class code descriptions
+        const classCodeLabels = {
+            '5102': 'Installation',
+            '5103': 'Installation',
+            '5146': 'Furniture Install',
+            '658': 'Metal Erection Install',
+            '8235': 'Supply Only'
         };
 
         // WC BASE RATES FOR SUPPLY-ONLY PAYROLL CLASS CODES
@@ -624,19 +713,48 @@
         // $500K Deductible Program
         // =========================================
         const ldFactors = {
-            'AZ': 1.0,    // No LD factor on file
-            'CO': 1.0,    // No LD factor on file
-            'CT': 0.0832, // From CT rating page (code 9663)
-            'FL': 1.0,    // No LD factor on file
-            'ME': 1.0,    // Pending update; currently aligned with prior default behavior
-            'MA': 1.0,    // MA has no large deductible - different program structure
-            'MD': 1.0,    // No LD factor on file
-            'MI': 1.0,    // No LD factor on file
-            'NJ': 1.0,    // No LD factor on file
-            'NY': 1.0,    // No LD factor on file
-            'PA': 1.0,    // No LD factor on file
-            'RI': 0.0548, // From RI rating page (code 9664)
-            'TX': 1.0     // No LD factor on file
+            'AL': 0.0706,
+            'AR': 0.2214,
+            'AZ': 0.2737,
+            'CA': 0.0832,
+            'CO': 0.0549,
+            'CT': 0.0832,
+            'FL': 0.2124,
+            'GA': 0.054,
+            'HI': 0.202,
+            'IA': 0.2561,
+            'ID': 0.0549,
+            'IL': 0.0521,
+            'IN': 0.0548,
+            'KS': 0.0545,
+            'KY': 0.0832,
+            'LA': 0.0506,
+            'MA': 0,      // No LD factor - different program structure
+            'MD': 0.0548,
+            'ME': 0,      // No LD factor on file
+            'MI': 0.0833,
+            'MN': 0.2094,
+            'MO': 0.0832,
+            'MS': 0.0835,
+            'MT': 0.0832,
+            'NC': 0.2541,
+            'NE': 0.1386,
+            'NH': 0.0831,
+            'NJ': 0.0829,
+            'NM': 0.0832,
+            'NV': 0.0548,
+            'NY': 0.0832,
+            'OK': 0.0832,
+            'OR': 0.1658,
+            'PA': 0.1931,
+            'RI': 0.0548,
+            'SC': 0.0832,
+            'SD': 0.0832,
+            'TN': 0.0832,
+            'TX': 0.08,
+            'UT': 0.0548,
+            'VA': 0.0832,
+            'WV': 0.052
         };
 
         // =========================================
@@ -644,27 +762,66 @@
         // Source: 25-26 WC Policy Rating Pages
         // =========================================
         const emrFactors = {
-            'AZ': 1.0,
-            'CO': 1.0,
-            'CT': 0.95,   // Connecticut EMR update
-            'FL': 1.0,
-            'ME': 0.95,   // Maine EMR update
-            'MA': 1.01,   // From MA rating page
-            'MD': 1.0,
-            'MI': 1.0,
-            'NJ': 1.0,
-            'NY': 1.0,
-            'PA': 1.0,
-            'RI': 0.95,   // Rhode Island EMR update
-            'TX': 1.0
+            'AL': 0.95,
+            'AR': 0.95,
+            'AZ': 0.95,
+            'CA': 0.95,
+            'CO': 0.95,
+            'CT': 0.95,
+            'FL': 0.95,
+            'GA': 0.95,
+            'HI': 0.95,
+            'IA': 0.95,
+            'ID': 0.95,
+            'IL': 0.95,
+            'IN': 0.95,
+            'KS': 0.95,
+            'KY': 0.95,
+            'LA': 0.95,
+            'MA': 1.01,
+            'MD': 0.95,
+            'ME': 0.95,
+            'MI': 0.65,
+            'MN': 0.95,
+            'MO': 0.95,
+            'MS': 0.95,
+            'MT': 0.95,
+            'NC': 0.95,
+            'NE': 0.95,
+            'NH': 0.95,
+            'NJ': 1.115,
+            'NM': 0.95,
+            'NV': 0.95,
+            'NY': 1.87,
+            'OK': 0.95,
+            'OR': 0.95,
+            'PA': 1.143,
+            'RI': 0.95,
+            'SC': 0.95,
+            'SD': 0.95,
+            'TN': 0.95,
+            'TX': 0.95,
+            'UT': 0.95,
+            'VA': 0.95,
+            'WV': 0.95
         };
 
         // State full names for emails
         const stateNames = {
-            'AZ': 'Arizona', 'CO': 'Colorado', 'CT': 'Connecticut',
-            'FL': 'Florida', 'ME': 'Maine', 'MA': 'Massachusetts', 'MD': 'Maryland',
-            'MI': 'Michigan', 'NJ': 'New Jersey', 'NY': 'New York',
-            'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'TX': 'Texas'
+            'AL': 'Alabama', 'AR': 'Arkansas', 'AZ': 'Arizona',
+            'CA': 'California', 'CO': 'Colorado', 'CT': 'Connecticut',
+            'FL': 'Florida', 'GA': 'Georgia', 'HI': 'Hawaii',
+            'IA': 'Iowa', 'ID': 'Idaho', 'IL': 'Illinois',
+            'IN': 'Indiana', 'KS': 'Kansas', 'KY': 'Kentucky',
+            'LA': 'Louisiana', 'MA': 'Massachusetts', 'MD': 'Maryland',
+            'ME': 'Maine', 'MI': 'Michigan', 'MN': 'Minnesota',
+            'MO': 'Missouri', 'MS': 'Mississippi', 'MT': 'Montana',
+            'NC': 'North Carolina', 'NE': 'Nebraska', 'NH': 'New Hampshire',
+            'NJ': 'New Jersey', 'NM': 'New Mexico', 'NV': 'Nevada',
+            'NY': 'New York', 'OK': 'Oklahoma', 'OR': 'Oregon',
+            'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+            'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas',
+            'UT': 'Utah', 'VA': 'Virginia', 'WV': 'West Virginia'
         };
 
         // GL and Umbrella rates (per $1,000 of contract value)
@@ -724,18 +881,8 @@
             if (laborScope !== 'self') {
                 return '';
             }
-
             const classCodeSelect = document.getElementById('classCode');
-            if (!classCodeSelect) {
-                return '5102';
-            }
-
-            const supportsSupplyOnlyClassCode = Object.prototype.hasOwnProperty.call(wcSupplyOnlyRates, state);
-            if (supportsSupplyOnlyClassCode && classCodeSelect.value === '8235') {
-                return '8235';
-            }
-
-            return '5102';
+            return classCodeSelect ? classCodeSelect.value : '';
         }
 
         function updateClassCodeOptions() {
@@ -743,27 +890,51 @@
             const state = getEffectiveState();
             const classCodeGroup = document.getElementById('classCodeGroup');
             const classCodeSelect = document.getElementById('classCode');
-            const classCode8235 = document.getElementById('classCode8235');
             const classCodeHelp = document.getElementById('classCodeHelp');
 
             if (laborScope !== 'self') {
                 classCodeGroup.style.display = 'none';
-                classCodeSelect.value = '5102';
+                classCodeSelect.innerHTML = '';
                 return;
             }
 
             classCodeGroup.style.display = 'block';
 
-            const supportsSupplyOnlyClassCode = Object.prototype.hasOwnProperty.call(wcSupplyOnlyRates, state);
-            classCode8235.hidden = !supportsSupplyOnlyClassCode;
+            // Remember current selection
+            const previousValue = classCodeSelect.value;
+            classCodeSelect.innerHTML = '';
 
-            if (!supportsSupplyOnlyClassCode && classCodeSelect.value === '8235') {
-                classCodeSelect.value = '5102';
+            // Add installation class codes for this state
+            const installCodes = wcInstallRates[state] || {};
+            for (const code in installCodes) {
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = code + ' - ' + (classCodeLabels[code] || 'Installation');
+                classCodeSelect.appendChild(option);
             }
 
-            classCodeHelp.textContent = supportsSupplyOnlyClassCode
-                ? state + ' supports 5102 (installation) and 8235 (supply-only payroll).'
-                : 'Use class code 5102 for installation payroll.';
+            // Add supply-only 8235 if available
+            if (wcSupplyOnlyRates[state]) {
+                const option = document.createElement('option');
+                option.value = '8235';
+                option.textContent = '8235 - Supply Only';
+                classCodeSelect.appendChild(option);
+            }
+
+            // Restore previous selection if still valid
+            if (previousValue && classCodeSelect.querySelector('option[value="' + previousValue + '"]')) {
+                classCodeSelect.value = previousValue;
+            }
+
+            // Update help text
+            const optionCount = classCodeSelect.options.length;
+            if (optionCount > 1) {
+                classCodeHelp.textContent = 'Select the appropriate class code for ' + state + '.';
+            } else if (optionCount === 1) {
+                classCodeHelp.textContent = 'Class code for ' + state + '.';
+            } else {
+                classCodeHelp.textContent = 'No WC rates on file for this state.';
+            }
         }
         
         function toggleLaborFields() {
@@ -806,28 +977,43 @@
 
             // WC calculation with Large Deductible Factor and EMR
             const rateInfoBox = document.getElementById('rateInfoBox');
-            const baseRate = classCode === '8235' ? wcSupplyOnlyRates[state] : wcRates[state];
+            const noRatesNote = document.getElementById('noRatesNote');
+            let baseRate;
+            if (classCode === '8235') {
+                baseRate = wcSupplyOnlyRates[state];
+            } else {
+                const installCodes = wcInstallRates[state];
+                baseRate = installCodes ? installCodes[classCode] : undefined;
+            }
             
             if (laborScope === 'self' && state && baseRate) {
-                const ldFactor = ldFactors[state] || 1.0;
+                const ldFactor = ldFactors[state] || 0;
                 const emr = emrFactors[state] || 1.0;
-                
-                // Calculate effective rate
-                const effectiveRate = baseRate * emr * ldFactor;
-                
+
+                // Calculate effective rate (LDF is a credit percentage)
+                const effectiveRate = baseRate * emr * (1 - ldFactor);
+
                 // Calculate WC deduction
                 wc = (payroll / 100) * effectiveRate;
-                
+
                 // Display rate breakdown
                 rateInfoBox.style.display = 'block';
+                noRatesNote.classList.remove('show');
                 document.getElementById('rateState').textContent = state;
                 document.getElementById('displayClassCode').textContent = classCode;
                 document.getElementById('displayBaseRate').textContent = baseRate.toFixed(3);
                 document.getElementById('displayEMR').textContent = emr.toFixed(2);
-                document.getElementById('displayLDF').textContent = ldFactor < 1 ? ldFactor.toFixed(4) + ' (' + ((1 - ldFactor) * 100).toFixed(2) + '% credit)' : 'N/A (1.0)';
+                document.getElementById('displayLDF').textContent = ldFactor > 0 ? ldFactor.toFixed(4) + ' (' + (ldFactor * 100).toFixed(2) + '% credit)' : 'N/A (none)';
                 document.getElementById('displayEffectiveRate').textContent = effectiveRate.toFixed(4);
             } else {
                 rateInfoBox.style.display = 'none';
+                // Show no-rates note when self-perform is selected but state has no WC rates
+                const hasNoRates = laborScope === 'self' && state && !wcInstallRates[state];
+                if (hasNoRates) {
+                    noRatesNote.classList.add('show');
+                } else {
+                    noRatesNote.classList.remove('show');
+                }
             }
 
             // Round to whole dollars
@@ -881,7 +1067,7 @@
             const payroll = parseNumber(document.getElementById('payroll').value);
             const includeOP = document.getElementById('includeOP').checked;
             const selectedClassCode = getSelectedClassCode(state, laborScope);
-            const classCodeDisplay = selectedClassCode === '8235' ? '8235 (Supply Only)' : '5102 (Installation)';
+            const classCodeDisplay = selectedClassCode + ' (' + (classCodeLabels[selectedClassCode] || 'Installation') + ')';
 
             // Get calculated values
             const wc = document.getElementById('wcResult').textContent;
