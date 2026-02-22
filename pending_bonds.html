@@ -448,7 +448,8 @@
         <!-- Main Content -->
         <div class="main-content" id="mainContent">
             <div class="nav-links">
-                <a href="index.html" class="nav-link">Insurance Hub</a>
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="ocip_ccip.html" class="nav-link">Insurance Hub</a>
                 <a href="calculator.html" class="nav-link">Deduction Calculator</a>
                 <a href="bond_request.html" class="nav-link">Bond Request</a>
             </div>
@@ -627,10 +628,18 @@
     </div>
 
     <script>
-        // Password for access
-        const ACCESS_KEY = 'SuckleHighway1650@';
+        // Password hash (SHA-256) — actual password is not stored in source
+        const ACCESS_HASH = '66807e7218a602714c51903981492683478cc9338758424b107a95ef21c2b0ee';
         const SESSION_KEY = 'udhg_bonds_auth';
         const STORAGE_KEY = 'udhg_pending_bonds';
+
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
 
         // Check if already authenticated this session
         function checkAuth() {
@@ -639,9 +648,10 @@
             }
         }
 
-        function authenticate() {
+        async function authenticate() {
             const input = document.getElementById('passwordInput').value;
-            if (input === ACCESS_KEY) {
+            const inputHash = await hashPassword(input);
+            if (inputHash === ACCESS_HASH) {
                 sessionStorage.setItem(SESSION_KEY, 'true');
                 document.getElementById('loginError').style.display = 'none';
                 showMainContent();
