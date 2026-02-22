@@ -3,767 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCIP/CCIP & Insurance Hub | Unified Door and Hardware Group</title>
+    <title>UDHG Risk Management Portal</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             line-height: 1.6;
             color: #333;
             background: #f5f5f5;
         }
-        
+
         .header {
             background: #8B2332;
             color: white;
-            padding: 20px 40px;
+            padding: 40px 40px 30px 40px;
+            text-align: center;
         }
-        
+
         .header h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
-        
+
         .header .subtitle {
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             opacity: 0.9;
+            margin-top: 8px;
         }
-        
+
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px 20px;
         }
-        
-        .tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .tab {
-            padding: 10px 18px;
-            background: white;
-            border: none;
-            border-radius: 8px 8px 0 0;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #666;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-        
-        .tab:hover {
-            background: #eee;
-        }
-        
-        .tab.active {
-            background: #8B2332;
-            color: white;
-        }
-        
-        .panel {
-            display: none;
-            background: white;
-            border-radius: 0 8px 8px 8px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .panel.active {
-            display: block;
-        }
-        
-        .process-step {
-            background: #f9f9f9;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 4px solid #8B2332;
-        }
-        
-        .process-step h3 {
-            color: #8B2332;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .step-number {
-            background: #8B2332;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-        
-        .dept-box {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-        }
-        
-        .dept-box h4 {
-            color: #8B2332;
-            margin-bottom: 8px;
-            font-size: 1rem;
-        }
-        
-        .dept-box ul {
-            margin-left: 20px;
+
+        .welcome {
+            text-align: center;
+            margin-bottom: 30px;
             color: #555;
-        }
-        
-        .dept-box li {
-            margin-bottom: 5px;
-        }
-        
-        .faq-item {
-            border-bottom: 1px solid #eee;
-            padding: 20px 0;
-        }
-        
-        .faq-item:last-child {
-            border-bottom: none;
-        }
-        
-        .faq-question {
-            font-weight: 600;
-            color: #8B2332;
-            margin-bottom: 10px;
             font-size: 1.05rem;
         }
-        
-        .faq-answer {
-            color: #555;
-        }
-        
-        .rates-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 0.95rem;
-        }
-        
-        .rates-table th,
-        .rates-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .rates-table th {
-            background: #8B2332;
-            color: white;
-            font-weight: 500;
-        }
-        
-        .rates-table tr:hover {
-            background: #f9f9f9;
-        }
-        
-        .section-title {
-            color: #8B2332;
-            margin: 30px 0 15px 0;
-            font-size: 1.1rem;
-            border-bottom: 2px solid #8B2332;
-            padding-bottom: 8px;
-        }
-        
-        .section-title:first-child {
-            margin-top: 0;
-        }
-        
-        .info-box {
-            background: #e8f4f8;
-            border-left: 4px solid #8B2332;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 0 6px 6px 0;
-        }
-        
-        .warning-box {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 0 6px 6px 0;
-        }
-        
-        .success-box {
-            background: #d4edda;
-            border-left: 4px solid #28a745;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 0 6px 6px 0;
-        }
-        
-        .contact-box {
-            background: #f0f0f0;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 30px;
-        }
-        
-        .contact-box h3 {
-            color: #8B2332;
-            margin-bottom: 10px;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #8B2332;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-        
-        .btn:hover {
-            background: #6d1a27;
-        }
-        
-        .btn-secondary {
-            background: #666;
-        }
-        
-        .btn-secondary:hover {
-            background: #555;
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #888;
-            font-size: 0.85rem;
-        }
-        
-        .plain-english {
-            background: #f0f7ff;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .plain-english h3 {
-            color: #2c5aa0;
-            margin-bottom: 10px;
-        }
-        
-        .analogy {
-            font-style: italic;
-            color: #555;
-            padding: 10px;
-            background: white;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-        
-        .coi-form {
-            max-width: 700px;
-        }
-        
-        .form-row {
+
+        .card-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
-        
-        @media (max-width: 600px) {
-            .form-row {
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-top: 4px solid #8B2332;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .card h2 {
+            color: #8B2332;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+
+        .card .card-link {
+            margin-top: 15px;
+            color: #8B2332;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .contact-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 25px 30px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .contact-bar h3 {
+            color: #8B2332;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .contact-bar p {
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .contact-bar a {
+            color: #8B2332;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-bar a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px 20px;
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 700px) {
+            .card-grid {
                 grid-template-columns: 1fr;
             }
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: #444;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-family: inherit;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #8B2332;
-        }
-        
-        .email-preview {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            white-space: pre-wrap;
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header .subtitle {
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="sharepoint-notice" style="background:#2196F3; color:white; padding:12px 20px; text-align:center; font-size:0.95rem;">
-        <strong>📌 Using SharePoint?</strong> Click the <strong>"Open"</strong> button in the toolbar above to use the calculator and interactive features. You can also bookmark that page for quick access.
-        <button onclick="document.getElementById('sharepoint-notice').style.display='none'" style="margin-left:15px; background:white; color:#2196F3; border:none; padding:5px 12px; border-radius:4px; cursor:pointer; font-weight:bold;">Got it</button>
-    </div>
-    
     <div class="header">
-        <h1>UNIFIED DOOR & HARDWARE — Insurance Hub</h1>
-        <div class="subtitle">OCIP/CCIP Process, Deduction Calculator, COI Requests & More</div>
+        <h1>UNIFIED DOOR & HARDWARE GROUP</h1>
+        <div class="subtitle">Risk Management Portal</div>
     </div>
-    
+
     <div class="container">
-        <div class="tabs">
-            <button class="tab active" onclick="showTab('process')">Process Flow</button>
-            <a class="tab" href="calculator.html" target="_blank">Deduction Calculator ↗</a>
-            <button class="tab" onclick="showTab('coi')">COI Requests</button>
-            <button class="tab" onclick="showTab('faq')">FAQ</button>
-            <button class="tab" onclick="showTab('enrollment')">Enrollment Info</button>
-            <a class="tab" href="bond_request.html">Bond Request ↗</a>
+        <p class="welcome">Welcome to the UDHG Risk Management hub. Select a tool below to get started.</p>
+
+        <div class="card-grid">
+            <a href="ocip_ccip.html" class="card">
+                <div class="card-icon">&#128203;</div>
+                <h2>OCIP/CCIP Insurance Hub</h2>
+                <p>Learn about wrap-up insurance programs, enrollment process, COI requests, and frequently asked questions.</p>
+                <div class="card-link">Open Insurance Hub &rarr;</div>
+            </a>
+
+            <a href="calculator.html" class="card">
+                <div class="card-icon">&#128200;</div>
+                <h2>Deduction Calculator</h2>
+                <p>Calculate workers' comp, general liability, and umbrella deductions for OCIP/CCIP bid pricing.</p>
+                <div class="card-link">Open Calculator &rarr;</div>
+            </a>
+
+            <a href="bond_request.html" class="card">
+                <div class="card-icon">&#128196;</div>
+                <h2>Bond Request</h2>
+                <p>Submit a new bond request — bid bonds, performance bonds, payment bonds, and more.</p>
+                <div class="card-link">Submit Bond Request &rarr;</div>
+            </a>
+
+            <a href="pending_bonds.html" class="card">
+                <div class="card-icon">&#128204;</div>
+                <h2>Pending Bonds Tracker</h2>
+                <p>View and manage all submitted bond requests. Track status, filter, search, and export to CSV.</p>
+                <div class="card-link">View Pending Bonds &rarr;</div>
+            </a>
         </div>
-        
-        <!-- Process Flow Panel -->
-        <div id="process" class="panel active">
-            <h2 class="section-title" style="margin-top:0;">What is an OCIP/CCIP? (Plain English)</h2>
-            
-            <div class="plain-english">
-                <h3>What is a "Wrap-Up" Program?</h3>
-                <p>A <strong>Wrap-Up</strong> is a consolidated insurance program where one party (the Owner or GC) provides insurance coverage for all contractors working on a project. Instead of every contractor bringing their own insurance, it's all "wrapped up" into one program.</p>
-                
-                <h3 style="margin-top:15px;">Think of it like this:</h3>
-                <div class="analogy">
-                    Imagine you're going to a potluck dinner. Normally, everyone brings their own dish (their own insurance). But sometimes the host says "Don't bring anything—I'm providing all the food" (the owner or GC provides all the insurance). That's a wrap-up program.
-                </div>
-                <p style="margin-top:15px;">
-                    <strong>OCIP</strong> = Owner Controlled Insurance Program (the Owner is the "host")<br>
-                    <strong>CCIP</strong> = Contractor Controlled Insurance Program (the GC is the "host")
-                </p>
-                <p style="margin-top:10px;">
-                    Since they're covering our insurance on that job, we give them a credit (deduction) in our bid price. We're basically saying "Here's what we would have spent on insurance for this job—take it off our price since you're covering it."
-                </p>
-            </div>
-            
-            <div class="warning-box">
-                <strong>⚠️ Important:</strong> Insurance rates change every year. Always verify you're using current rates before bidding—check with Risk Management if you're unsure.
-            </div>
-            
-            <h2 class="section-title">Who Does What? (By Department)</h2>
-            
-            <div class="dept-box">
-                <h4>📊 Sales / Estimating Team</h4>
-                <p><strong>When:</strong> During bidding</p>
-                <ul>
-                    <li>Use the Deduction Calculator to figure out the insurance credit</li>
-                    <li>Subtract that credit from your bid price</li>
-                    <li>Give the GC/Owner the deduction amount if they ask</li>
-                </ul>
-            </div>
-            
-            <div class="dept-box">
-                <h4>📝 Contracts Team</h4>
-                <p><strong>When:</strong> After we win the job</p>
-                <ul>
-                    <li>Confirm the contract actually requires OCIP/CCIP</li>
-                    <li>Flag the project as a wrap-up job</li>
-                    <li>Hand off project details to Risk Management for enrollment</li>
-                </ul>
-                <p style="margin-top:10px;"><strong>Contact:</strong> contracts@udhgroup.com</p>
-            </div>
-            
-            <div class="dept-box">
-                <h4>🛡️ Risk Management Team</h4>
-                <p><strong>When:</strong> After contract handoff</p>
-                <ul>
-                    <li>Complete the wrap enrollment (submit our info to their program)</li>
-                    <li>Get the Certificate of Coverage once we're enrolled</li>
-                    <li>Track all wrap projects for audits</li>
-                    <li>Answer questions about deductions, rates, or anything insurance</li>
-                </ul>
-                <p style="margin-top:10px;"><strong>Contacts:</strong></p>
-                <p style="margin-left:10px;">wrap.enrollment@myfbm.com | 657-472-1661<br>
-                Rose Picco, Risk Management Admin — rose_picco@udhg.com<br>
-                Daniel Raxa, Director of Risk Management — daniel.raxa@myfbm.com</p>
-            </div>
-            
-            <h2 class="section-title">Step-by-Step Process</h2>
-            
-            <div class="process-step">
-                <h3><span class="step-number">1</span> Identify if it's a Wrap Job</h3>
-                <p>Check the bid documents or ask the GC. If they mention "OCIP," "CCIP," or "wrap-up insurance," it's a wrap job.</p>
-                <p style="margin-top:10px;"><strong>Also figure out:</strong></p>
-                <ul style="margin-left:20px; margin-top:5px;">
-                    <li>Is this UDHG or FBM? (FBM = supply only, no install)</li>
-                    <li>Are we self-installing, using subs, or delivery only?</li>
-                    <li>What state is the project in?</li>
-                </ul>
-            </div>
-            
-            <div class="process-step">
-                <h3><span class="step-number">2</span> Calculate the Deduction</h3>
-                <p>Use the <strong><a href="calculator.html" target="_blank" style="color:#8B2332;">Deduction Calculator</a></strong>. Enter your project details and get the credit amount.</p>
-                <p style="margin-top:10px;"><strong>Remember:</strong> Use labor COST (payroll), not labor SELL. Using sell price gives away our profit.</p>
-            </div>
-            
-            <div class="process-step">
-                <h3><span class="step-number">3</span> Apply the Deduction to Your Bid</h3>
-                <p>Subtract the total deduction from your bid price. Note it clearly per the bid requirements.</p>
-            </div>
-            
-            <div class="process-step">
-                <h3><span class="step-number">4</span> Win the Job → Contracts Reviews</h3>
-                <p>Contracts confirms the wrap requirement and hands off to Risk Management.</p>
-            </div>
-            
-            <div class="process-step">
-                <h3><span class="step-number">5</span> Risk Management Enrolls the Project</h3>
-                <p>We submit our company info to the wrap program and get a Certificate of Coverage.</p>
-            </div>
-            
-            <div class="process-step">
-                <h3><span class="step-number">6</span> Track Payroll Hours (Self-Install Only)</h3>
-                <p>Project Managers: Track your labor hours! We need this for audits and to get money back.</p>
-            </div>
-            
-            <div class="warning-box">
-                <strong>⚠️ Don't skip steps!</strong> Missing enrollment can cost tens of thousands of dollars or leave us uninsured. When in doubt, email Risk Management.
-            </div>
-        </div>
-        
-        <!-- COI Request Panel -->
-        <div id="coi" class="panel">
-            <h2 class="section-title" style="margin-top:0;">How to Request a Certificate of Insurance (COI)</h2>
-            
-            <div class="info-box">
-                <strong>What's a COI?</strong> A Certificate of Insurance is a document proving we have insurance. Customers, GCs, and landlords often require one before we can do work or access a jobsite.
-            </div>
-            
-            <h3 style="color:#8B2332; margin: 20px 0 15px 0;">Option 1: Use the COI Request Form (Recommended)</h3>
-            <p style="margin-bottom:15px;">Submit requests and search existing COIs through Origami RMIS:</p>
-            <a href="https://live.origamirisk.com/Origami/IncidentEntry/Direct?token=uoB0ECgrVCmJBQg1xT78mFDKdbgqEi%2F45WJHonGvVvu4TrGcvnvEcH88%2F5fZqrnmi1bZdm7UnQDw75CyPNvQtHv6ueqc2IAg3jaQCXfrS5SGHSCD69OMeimdFrrfoYGX&CollectionLinkItemID=46" target="_blank" class="btn">Open COI Search & Request Form →</a>
-            
-            <h3 style="color:#8B2332; margin: 30px 0 15px 0;">Option 2: Email Request</h3>
-            <p>Fill out the form below and we'll generate an email you can send to Lockton:</p>
-            
-            <div class="coi-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="coiBranch">Branch / DBA Name</label>
-                        <input type="text" id="coiBranch" placeholder="e.g., UDHG Phoenix">
-                    </div>
-                    <div class="form-group">
-                        <label for="coiProjectNum">UDHG Project Number</label>
-                        <input type="text" id="coiProjectNum" placeholder="e.g., 12345">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="coiCompany">Certificate Holder (Company Name)</label>
-                    <input type="text" id="coiCompany" placeholder="e.g., ABC Builders Company">
-                </div>
-                
-                <div class="form-group">
-                    <label for="coiAddress">Certificate Holder Address</label>
-                    <textarea id="coiAddress" rows="3" placeholder="123 Main Street&#10;City, State ZIP"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="coiEmail">Send COI to (Email)</label>
-                    <input type="email" id="coiEmail" placeholder="customer@example.com">
-                </div>
-                
-                <div class="form-group">
-                    <label for="coiAddlInsured">Additional Insured Required?</label>
-                    <select id="coiAddlInsured">
-                        <option value="yes">Yes - List as Additional Insured</option>
-                        <option value="no">No - Certificate Holder Only</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="coiUrgency">Urgency</label>
-                    <select id="coiUrgency">
-                        <option value="normal">Normal (Standard turnaround)</option>
-                        <option value="rush">RUSH (Needed within 6 hours)</option>
-                        <option value="urgent">URGENT (Needed within 3 hours)</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="coiNotes">Special Instructions / Notes</label>
-                    <textarea id="coiNotes" rows="3" placeholder="Any specific requirements, project dates, etc."></textarea>
-                </div>
-                
-                <button class="btn" onclick="generateCOIEmail()">Generate Email</button>
-            </div>
-            
-            <div id="coiEmailPreview" style="display:none;">
-                <h3 style="color:#8B2332; margin: 30px 0 15px 0;">Email Preview</h3>
-                <div class="email-preview" id="coiEmailText"></div>
-                <div class="btn-group">
-                    <button class="btn" onclick="copyCOIEmail()">Copy to Clipboard</button>
-                    <a id="coiMailtoLink" href="#" class="btn btn-secondary">Open in Email Client</a>
-                </div>
-                <p style="margin-top:15px; color:#666; font-size:0.9rem;">
-                    <strong>Send to:</strong> SECertSpeed@lockton.com<br>
-                    <strong>CC:</strong> COI@myfbm.com<br>
-                    <strong>Don't forget:</strong> Attach the insurance requirements from the contract!
-                </p>
-            </div>
-            
-            <h2 class="section-title">Important Rules for COI Requests</h2>
-            
-            <ul style="margin-left:20px; color:#555;">
-                <li><strong>Always include "UDHG" in the subject line</strong></li>
-                <li>Include the UDHG project number if you have one</li>
-                <li>Attach the insurance requirements section from the contract</li>
-                <li>Don't change the subject line after Lockton assigns a Request ID</li>
-                <li>Don't reply to old threads for new requests—start a new email</li>
-            </ul>
-            
-            <h2 class="section-title">COI Problems or Rejections?</h2>
-            <p>Forward the full email thread with the rejection reason to:</p>
-            <ul style="margin-left:20px; margin-top:10px; color:#555;">
-                <li>owen.houck@lockton.com</li>
-                <li>Rose_picco@udhg.com</li>
-                <li>Auri.derer@udhgroup.com</li>
-                <li>daniel.raxa@myfbm.com</li>
-            </ul>
-        </div>
-        
-        <!-- FAQ Panel -->
-        <div id="faq" class="panel">
-            <h2 class="section-title" style="margin-top:0;">Frequently Asked Questions</h2>
-            
-            <div class="faq-item">
-                <div class="faq-question">What's the difference between an OCIP and a CCIP?</div>
-                <div class="faq-answer">Both are "wrap-up" insurance programs. OCIP = Owner controls it. CCIP = General Contractor controls it. Either way, they provide the insurance and we give them a credit in our bid.</div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">How do I know if a project is a wrap job?</div>
-                <div class="faq-answer">Check the bid documents or ask the GC. If they mention "OCIP," "CCIP," "wrap-up insurance," or ask for an insurance deduction, it's a wrap job.</div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">What's the difference between UDHG and FBM on wrap projects?</div>
-                <div class="faq-answer">FBM is supply-only—no installation, no labor exposure. UDHG may include installation work, which means we could have workers' comp exposure depending on the scope.</div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">Should I use labor cost or labor sell for the WC calculation?</div>
-                <div class="faq-answer">Always use labor cost (payroll). Never labor sell. Insurance is based on exposure, not what we charge. Using sell price gives away our profit to the GC.</div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">What if we're subcontracting the install or it's delivery-only?</div>
-                <div class="faq-answer">Select "Subcontracted" or "None" in the calculator. WC will be $0 because that exposure belongs to the sub or doesn't exist.</div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">Which states is UDHG approved for self-install?</div>
-                <div class="faq-answer">AZ, CO, FL, MD, MI, NJ, NY, PA, and TX. If you've got a self-install project in another state, contact Risk Management before bidding.</div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">What information does the wrap admin need for enrollment?</div>
-                <div class="faq-answer">W-9, company tax ID, NCCI ID, current EMR (varies by state), rate pages for GL/Umbrella/WC, project name, contract value, scope of work, and jobsite address. Risk Management has all this on file.</div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">Who handles enrollment?</div>
-                <div class="faq-answer">Risk Management. Once Contracts confirms it's a wrap job, they hand it off to Risk Management for enrollment. Contact: wrap.enrollment@myfbm.com</div>
-            </div>
-            
-            <div class="contact-box">
-                <h3>Still Have Questions?</h3>
-                <p><strong>Risk Management:</strong> wrap.enrollment@myfbm.com | 657-472-1661</p>
-                <p><strong>Rose Picco</strong>, Risk Management Admin — rose_picco@udhg.com</p>
-                <p><strong>Daniel Raxa</strong>, Director of Risk Management — daniel.raxa@myfbm.com</p>
-            </div>
-        </div>
-        
-        <!-- Enrollment Panel -->
-        <div id="enrollment" class="panel">
-            <h2 class="section-title" style="margin-top:0;">Enrollment Information</h2>
-            
-            <div class="info-box">
-                <strong>Need company information for enrollment?</strong> Contact Risk Management for W-9s, tax IDs, NCCI IDs, EMRs, and rate pages. We maintain this information internally and provide it as needed for wrap enrollments.
-            </div>
-            
-            <h2 class="section-title">What Wrap Admins Typically Request</h2>
-            
-            <ul style="margin-left: 20px; color: #555;">
-                <li>W-9 (for UDHG or FBM depending on contract)</li>
-                <li>Company Tax ID</li>
-                <li>NCCI ID</li>
-                <li>Current EMR (varies by state)</li>
-                <li>Rate pages for GL, Umbrella, and WC by state</li>
-                <li>Project name, contract value, scope of work</li>
-                <li>Jobsite address</li>
-            </ul>
-            
-            <div class="success-box">
-                <strong>Good news:</strong> Risk Management has all this information on file. Just let us know the project details and we'll handle the enrollment paperwork.
-            </div>
-            
-            <h2 class="section-title">Primary Contacts</h2>
-            
-            <table class="rates-table">
-                <thead>
-                    <tr>
-                        <th>Contact</th>
-                        <th>Role</th>
-                        <th>Email / Phone</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Rose Picco</td>
-                        <td>Risk Management Admin</td>
-                        <td>rose_picco@udhg.com | 657-472-1661</td>
-                    </tr>
-                    <tr>
-                        <td>Daniel Raxa</td>
-                        <td>Director, Risk Management</td>
-                        <td>daniel.raxa@myfbm.com</td>
-                    </tr>
-                    <tr>
-                        <td>Wrap Enrollment</td>
-                        <td>General Inquiries</td>
-                        <td>wrap.enrollment@myfbm.com | 657-472-1661</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="contact-box">
-                <h3>Need Help with Enrollment?</h3>
-                <p>Risk Management handles all wrap enrollments. Once Contracts confirms it's a wrap job, they hand it off.</p>
-                <p><strong>Email:</strong> wrap.enrollment@myfbm.com | <strong>Phone:</strong> 657-472-1661</p>
-            </div>
+
+        <div class="contact-bar">
+            <h3>Need Help?</h3>
+            <p>
+                <strong>Risk Management:</strong> <a href="mailto:wrap.enrollment@myfbm.com">wrap.enrollment@myfbm.com</a> | 657-472-1661<br>
+                <strong>Rose Picco</strong>, Risk Management Admin — <a href="mailto:rose_picco@udhg.com">rose_picco@udhg.com</a><br>
+                <strong>Daniel Raxa</strong>, Director of Risk Management — <a href="mailto:daniel.raxa@myfbm.com">daniel.raxa@myfbm.com</a>
+            </p>
         </div>
     </div>
-    
+
     <div class="footer">
-        <p>UDHG Insurance Hub | Last Updated: January 2026</p>
-        <p>Questions? Contact Risk Management: wrap.enrollment@myfbm.com | 657-472-1661</p>
+        <p>UDHG Risk Management Portal | Internal Use Only</p>
     </div>
-    
-    <script>
-        function showTab(tabId) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
-        }
-        
-        function generateCOIEmail() {
-            const branch = document.getElementById('coiBranch').value || '[Branch Name]';
-            const projectNum = document.getElementById('coiProjectNum').value || '[Project #]';
-            const company = document.getElementById('coiCompany').value || '[Company Name]';
-            const address = document.getElementById('coiAddress').value || '[Address]';
-            const email = document.getElementById('coiEmail').value || '[email]';
-            const addlInsured = document.getElementById('coiAddlInsured').value === 'yes';
-            const urgency = document.getElementById('coiUrgency').value;
-            const notes = document.getElementById('coiNotes').value;
-            
-            let urgencyPrefix = '';
-            if (urgency === 'rush') urgencyPrefix = 'RUSH ';
-            if (urgency === 'urgent') urgencyPrefix = 'URGENT ';
-            
-            const subject = `${urgencyPrefix}UDHG COI Request - ${company} - ${branch} - Project ${projectNum}`;
-            
-            let body = `Hi team,
-
-UDHG Branch ${branch} requires a COI for ${company}.`;
-            
-            if (addlInsured) {
-                body += ` They need to be listed as both certificate holder and additional insured.`;
-            } else {
-                body += ` They need to be listed as certificate holder only.`;
-            }
-            
-            body += `
-
-I've attached the insurance requirements from the contract.
-
-Certificate Holder:
-${company}
-${address}
-
-Please send the completed COI to: ${email}`;
-            
-            if (notes) {
-                body += `
-
-Notes/Special Instructions:
-${notes}`;
-            }
-            
-            body += `
-
-Please let me know if you have any questions.
-
-Thanks`;
-            
-            document.getElementById('coiEmailText').textContent = `TO: SECertSpeed@lockton.com
-CC: COI@myfbm.com
-SUBJECT: ${subject}
-
-${body}`;
-            
-            document.getElementById('coiEmailPreview').style.display = 'block';
-            
-            const mailtoLink = `mailto:SECertSpeed@lockton.com?cc=COI@myfbm.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            document.getElementById('coiMailtoLink').href = mailtoLink;
-        }
-        
-        function copyCOIEmail() {
-            const text = document.getElementById('coiEmailText').textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Email copied to clipboard!');
-            });
-        }
-    </script>
 </body>
 </html>
