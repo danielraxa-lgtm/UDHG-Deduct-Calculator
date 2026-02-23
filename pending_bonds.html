@@ -269,6 +269,17 @@
             text-align: left;
             font-weight: 500;
             white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .bond-table th:hover {
+            background: #6d1a27;
+        }
+
+        .bond-table th .sort-arrow {
+            margin-left: 4px;
+            font-size: 0.7rem;
         }
 
         .bond-table td {
@@ -425,6 +436,58 @@
             border-radius: 0 6px 6px 0;
             font-size: 0.9rem;
         }
+
+        .import-banner {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-left: 4px solid #28a745;
+            border-radius: 0 6px 6px 0;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .import-banner.show {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .import-banner .import-text {
+            color: #155724;
+            font-weight: 500;
+        }
+
+        .import-banner .dismiss-btn {
+            background: none;
+            border: none;
+            color: #155724;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sharepoint-link {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 6px 14px;
+            background: #0078d4;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .sharepoint-link:hover {
+            background: #005a9e;
+        }
     </style>
 </head>
 <body>
@@ -454,6 +517,12 @@
                 <a href="bond_request.html" class="nav-link">Bond Request</a>
             </div>
 
+            <!-- Import Banner (shown when bond is imported via URL) -->
+            <div class="import-banner" id="importBanner">
+                <span class="import-text" id="importText">Bond imported successfully!</span>
+                <button class="dismiss-btn" onclick="dismissImportBanner()">&times;</button>
+            </div>
+
             <!-- Stats -->
             <div class="stats-bar" id="statsBar">
                 <div class="stat-box">
@@ -471,6 +540,10 @@
                 <div class="stat-box">
                     <div class="stat-number" id="statActive">0</div>
                     <div class="stat-label">Active</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="statValue">$0</div>
+                    <div class="stat-label">Total Value</div>
                 </div>
             </div>
 
@@ -499,7 +572,8 @@
                 </div>
 
                 <div class="info-box" style="margin-bottom: 20px;">
-                    Bond data is stored in your browser's local storage. Bonds submitted via the Bond Request form are automatically added here. Data is only visible on this device/browser.
+                    Bonds submitted via the Bond Request form appear here automatically when you click the "Add to Tracker" link in the email.
+                    <a href="https://commercialhardware.sharepoint.com/sites/BondInsuranceTracking-ADP/Shared%20Documents/Forms/AllItems.aspx?e=5%3A0b01df5da6f24dfda73434a4ce3396f6&sharingv2=true&fromShare=true&at=9&CID=6341e7a8%2D13c8%2D42e4%2Db02f%2D9bf16968add5&FolderCTID=0x0120004EE1568D06C2114FAEEF7EC1C32B826E&id=%2Fsites%2FBondInsuranceTracking%2DADP%2FShared%20Documents%2FBond%20Tracking" target="_blank" class="sharepoint-link">Open SharePoint Folder</a>
                 </div>
 
                 <!-- Bond Table -->
@@ -507,13 +581,17 @@
                     <table class="bond-table" id="bondTable">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Bond Type</th>
-                                <th>Project</th>
-                                <th>Obligee</th>
-                                <th>Bond Amount</th>
-                                <th>Status</th>
-                                <th>Requestor</th>
+                                <th onclick="sortTable('bondNumber')">Bond # <span class="sort-arrow"></span></th>
+                                <th onclick="sortTable('dateSubmitted')">Date <span class="sort-arrow"></span></th>
+                                <th onclick="sortTable('bondType')">Bond Type <span class="sort-arrow"></span></th>
+                                <th onclick="sortTable('dba')">Principal / DBA <span class="sort-arrow"></span></th>
+                                <th onclick="sortTable('obligee')">Obligee <span class="sort-arrow"></span></th>
+                                <th onclick="sortTable('projectName')">Description <span class="sort-arrow"></span></th>
+                                <th onclick="sortTable('bondAmount')">Bond Amount <span class="sort-arrow"></span></th>
+                                <th onclick="sortTable('bondPremium')">Premium <span class="sort-arrow"></span></th>
+                                <th onclick="sortTable('suretyCompany')">Surety <span class="sort-arrow"></span></th>
+                                <th onclick="sortTable('closingDate')">Closing Date <span class="sort-arrow"></span></th>
+                                <th onclick="sortTable('status')">Status <span class="sort-arrow"></span></th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -538,6 +616,23 @@
 
             <div class="form-grid">
                 <div class="form-group">
+                    <label for="modalBondNumber">Bond Number</label>
+                    <input type="text" id="modalBondNumber" placeholder="e.g., SU1234567">
+                </div>
+                <div class="form-group">
+                    <label for="modalStatus">Status</label>
+                    <select id="modalStatus">
+                        <option value="Pending">Pending</option>
+                        <option value="Submitted">Submitted to Surety</option>
+                        <option value="Active">Active</option>
+                        <option value="Released">Released</option>
+                        <option value="Denied">Denied</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
                     <label for="modalBondType">Bond Type</label>
                     <select id="modalBondType">
                         <option value="Bid Bond">Bid Bond</option>
@@ -550,25 +645,36 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="modalStatus">Status</label>
-                    <select id="modalStatus">
-                        <option value="Pending">Pending</option>
-                        <option value="Submitted">Submitted</option>
-                        <option value="Active">Active</option>
-                        <option value="Released">Released</option>
-                        <option value="Denied">Denied</option>
+                    <label for="modalDba">Principal / DBA</label>
+                    <select id="modalDba">
+                        <option value="">Unified Door and Hardware Group, LLC</option>
+                        <option value="A.G. Mauro">A.G. Mauro</option>
+                        <option value="American Direct Procurement">American Direct Procurement</option>
+                        <option value="Commercial Hardware of MD">Commercial Hardware of MD</option>
+                        <option value="Construction Interior Products">Construction Interior Products</option>
+                        <option value="Eaton Door and Frame">Eaton Door and Frame</option>
+                        <option value="Joffe Millwork & Supply">Joffe Millwork & Supply</option>
+                        <option value="Liberty Door Systems">Liberty Door Systems</option>
+                        <option value="LIF Industries">LIF Industries</option>
+                        <option value="New Door Installation">New Door Installation</option>
+                        <option value="Next Door Distribution">Next Door Distribution</option>
+                        <option value="Rayhaven Group">Rayhaven Group</option>
+                        <option value="Specialty Services of New England">Specialty Services of New England</option>
+                        <option value="Unified Specialty Services">Unified Specialty Services</option>
+                        <option value="Weinstein & Holtzman of New York">Weinstein & Holtzman of New York</option>
+                        <option value="FBM Logistics LLC">FBM Logistics LLC</option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="modalProject">Project Name</label>
-                <input type="text" id="modalProject" placeholder="e.g., Downtown Office Tower">
+                <label for="modalObligee">Obligee</label>
+                <input type="text" id="modalObligee" placeholder="e.g., ABC Construction">
             </div>
 
             <div class="form-group">
-                <label for="modalObligee">Obligee</label>
-                <input type="text" id="modalObligee" placeholder="e.g., ABC Construction">
+                <label for="modalProject">Description / Project Name</label>
+                <input type="text" id="modalProject" placeholder="e.g., Downtown Office Tower - Doors, Frames & Hardware">
             </div>
 
             <div class="form-grid">
@@ -577,19 +683,38 @@
                     <input type="text" id="modalBondAmount" placeholder="e.g., 500,000" oninput="formatNumberInput(this)">
                 </div>
                 <div class="form-group">
-                    <label for="modalContractAmount">Contract Amount ($)</label>
-                    <input type="text" id="modalContractAmount" placeholder="e.g., 1,200,000" oninput="formatNumberInput(this)">
+                    <label for="modalBondPremium">Bond Premium ($)</label>
+                    <input type="text" id="modalBondPremium" placeholder="e.g., 12,500" oninput="formatNumberInput(this)">
                 </div>
             </div>
 
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="modalPrincipal">Principal</label>
-                    <select id="modalPrincipal">
-                        <option value="UDHG">UDHG</option>
-                        <option value="FBM">FBM</option>
+                    <label for="modalSuretyCompany">Surety Company</label>
+                    <select id="modalSuretyCompany">
+                        <option value="">Select...</option>
+                        <option value="Liberty Mutual">Liberty Mutual</option>
+                        <option value="Travelers">Travelers</option>
+                        <option value="CNA Surety">CNA Surety</option>
+                        <option value="Hartford">Hartford</option>
+                        <option value="Zurich">Zurich</option>
+                        <option value="Tokio Marine HCC">Tokio Marine HCC</option>
+                        <option value="Markel">Markel</option>
+                        <option value="Great American">Great American</option>
+                        <option value="Westfield">Westfield</option>
                         <option value="Other">Other</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="modalClosingDate">Closing Date</label>
+                    <input type="date" id="modalClosingDate">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="modalContractAmount">Contract Amount ($)</label>
+                    <input type="text" id="modalContractAmount" placeholder="e.g., 1,200,000" oninput="formatNumberInput(this)">
                 </div>
                 <div class="form-group">
                     <label for="modalState">State</label>
@@ -633,6 +758,9 @@
         const SESSION_KEY = 'udhg_bonds_auth';
         const STORAGE_KEY = 'udhg_pending_bonds';
 
+        // Sorting state
+        let currentSort = { field: 'dateSubmitted', direction: 'desc' };
+
         async function hashPassword(password) {
             const encoder = new TextEncoder();
             const data = encoder.encode(password);
@@ -665,7 +793,72 @@
         function showMainContent() {
             document.getElementById('loginGate').style.display = 'none';
             document.getElementById('mainContent').classList.add('show');
+            checkUrlImport();
             renderBonds();
+        }
+
+        // ========== URL IMPORT ==========
+        // When Auri clicks the "Add to Tracker" link from the email,
+        // the bond data is encoded in the URL and auto-imported here.
+        function checkUrlImport() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('action') !== 'import') return;
+
+            const bondData = {
+                id: Date.now().toString(),
+                bondNumber: '',
+                bondType: params.get('bondType') || '',
+                bondAmount: parseFloat(params.get('bondAmount')) || 0,
+                bondPremium: 0,
+                principal: params.get('principal') || 'Unified Door and Hardware Group, LLC',
+                dba: params.get('dba') || '',
+                obligee: params.get('obligee') || '',
+                obligeeAddress: params.get('obligeeAddress') || '',
+                mailToObligee: params.get('mailToObligee') || 'no',
+                projectName: params.get('projectName') || '',
+                contractAmount: parseFloat(params.get('contractAmount')) || 0,
+                projectAddress: params.get('projectAddress') || '',
+                projectState: params.get('projectState') || '',
+                scopeDescription: params.get('scopeDescription') || '',
+                requestorName: params.get('requestorName') || '',
+                requestorEmail: params.get('requestorEmail') || '',
+                urgency: params.get('urgency') || 'normal',
+                bidDate: params.get('bidDate') || '',
+                maintenancePeriod: params.get('maintenancePeriod') || '',
+                bondFormRequired: params.get('bondFormRequired') || '',
+                suretyCompany: '',
+                closingDate: '',
+                dateSubmitted: new Date().toISOString(),
+                status: 'Pending',
+                notes: ''
+            };
+
+            // Check for duplicate (same project + obligee + bond amount within last 5 minutes)
+            const bonds = getBonds();
+            const isDuplicate = bonds.some(b =>
+                b.projectName === bondData.projectName &&
+                b.obligee === bondData.obligee &&
+                b.bondAmount === bondData.bondAmount &&
+                (Date.now() - new Date(b.dateSubmitted).getTime()) < 300000
+            );
+
+            if (!isDuplicate) {
+                bonds.push(bondData);
+                setBonds(bonds);
+
+                // Show success banner
+                const banner = document.getElementById('importBanner');
+                document.getElementById('importText').textContent =
+                    `Bond imported: ${bondData.bondType} - ${bondData.projectName} ($${bondData.bondAmount.toLocaleString()}) from ${bondData.requestorName}`;
+                banner.classList.add('show');
+            }
+
+            // Clean the URL without reloading (remove the query params)
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        function dismissImportBanner() {
+            document.getElementById('importBanner').classList.remove('show');
         }
 
         // Format number input with commas
@@ -683,7 +876,12 @@
 
         function parseNumber(value) {
             if (!value) return 0;
-            return parseFloat(value.replace(/,/g, '')) || 0;
+            return parseFloat(String(value).replace(/,/g, '')) || 0;
+        }
+
+        function formatCurrency(num) {
+            if (!num) return '-';
+            return '$' + Number(num).toLocaleString();
         }
 
         // Get all bonds from localStorage
@@ -702,11 +900,54 @@
             const pending = bonds.filter(b => b.status === 'Pending').length;
             const submitted = bonds.filter(b => b.status === 'Submitted').length;
             const active = bonds.filter(b => b.status === 'Active').length;
+            const totalValue = bonds.reduce((sum, b) => sum + (parseFloat(b.bondAmount) || 0), 0);
 
             document.getElementById('statTotal').textContent = total;
             document.getElementById('statPending').textContent = pending;
             document.getElementById('statSubmitted').textContent = submitted;
             document.getElementById('statActive').textContent = active;
+            document.getElementById('statValue').textContent = totalValue > 0
+                ? '$' + totalValue.toLocaleString(undefined, { maximumFractionDigits: 0 })
+                : '$0';
+        }
+
+        // Sorting
+        function sortTable(field) {
+            if (currentSort.field === field) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.field = field;
+                currentSort.direction = 'asc';
+            }
+            renderBonds();
+        }
+
+        function sortBonds(bonds) {
+            const { field, direction } = currentSort;
+            return bonds.sort((a, b) => {
+                let valA = a[field] || '';
+                let valB = b[field] || '';
+
+                // Numeric fields
+                if (['bondAmount', 'bondPremium', 'contractAmount'].includes(field)) {
+                    valA = parseFloat(valA) || 0;
+                    valB = parseFloat(valB) || 0;
+                }
+                // Date fields
+                else if (['dateSubmitted', 'closingDate'].includes(field)) {
+                    valA = valA ? new Date(valA).getTime() : 0;
+                    valB = valB ? new Date(valB).getTime() : 0;
+                }
+                // String fields
+                else {
+                    valA = String(valA).toLowerCase();
+                    valB = String(valB).toLowerCase();
+                }
+
+                if (valA < valB) return direction === 'asc' ? -1 : 1;
+                if (valA > valB) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
         }
 
         // Render the bonds table
@@ -721,14 +962,17 @@
                 const matchesSearch = !search ||
                     (bond.projectName || '').toLowerCase().includes(search) ||
                     (bond.obligee || '').toLowerCase().includes(search) ||
-                    (bond.requestorName || '').toLowerCase().includes(search);
+                    (bond.requestorName || '').toLowerCase().includes(search) ||
+                    (bond.bondNumber || '').toLowerCase().includes(search) ||
+                    (bond.dba || '').toLowerCase().includes(search) ||
+                    (bond.suretyCompany || '').toLowerCase().includes(search);
                 const matchesStatus = statusFilter === 'all' || bond.status === statusFilter;
                 const matchesType = typeFilter === 'all' || bond.bondType === typeFilter;
                 return matchesSearch && matchesStatus && matchesType;
             });
 
-            // Sort by date descending
-            filtered.sort((a, b) => new Date(b.dateSubmitted) - new Date(a.dateSubmitted));
+            // Sort
+            sortBonds(filtered);
 
             updateStats(bonds);
 
@@ -747,20 +991,29 @@
                     const date = bond.dateSubmitted
                         ? new Date(bond.dateSubmitted).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                         : '-';
-                    const amount = bond.bondAmount ? '$' + bond.bondAmount.toLocaleString() : '-';
+                    const closingDate = bond.closingDate
+                        ? new Date(bond.closingDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                        : '-';
+                    const amount = bond.bondAmount ? formatCurrency(bond.bondAmount) : '-';
+                    const premium = bond.bondPremium ? formatCurrency(bond.bondPremium) : '-';
                     const statusClass = 'status-' + (bond.status || 'pending').toLowerCase();
+                    const principalDisplay = bond.dba || 'UDHG';
 
                     return `<tr>
-                        <td>${date}</td>
+                        <td>${bond.bondNumber || '<span style="color:#bbb">—</span>'}</td>
+                        <td style="white-space:nowrap">${date}</td>
                         <td>${bond.bondType || '-'}</td>
-                        <td>${bond.projectName || '-'}</td>
+                        <td>${principalDisplay}</td>
                         <td>${bond.obligee || '-'}</td>
-                        <td>${amount}</td>
+                        <td>${bond.projectName || '-'}</td>
+                        <td style="white-space:nowrap">${amount}</td>
+                        <td style="white-space:nowrap">${premium}</td>
+                        <td>${bond.suretyCompany || '-'}</td>
+                        <td style="white-space:nowrap">${closingDate}</td>
                         <td><span class="status-badge ${statusClass}">${bond.status || 'Pending'}</span></td>
-                        <td>${bond.requestorName || '-'}</td>
                         <td class="actions">
                             <button class="btn btn-sm btn-secondary" onclick="editBond('${bond.id}')">Edit</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteBond('${bond.id}')">Delete</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteBond('${bond.id}')">Del</button>
                         </td>
                     </tr>`;
                 }).join('');
@@ -771,13 +1024,17 @@
         function showAddModal() {
             document.getElementById('modalTitle').textContent = 'Add New Bond';
             document.getElementById('modalBondId').value = '';
+            document.getElementById('modalBondNumber').value = '';
             document.getElementById('modalBondType').value = 'Bid Bond';
             document.getElementById('modalStatus').value = 'Pending';
+            document.getElementById('modalDba').value = '';
             document.getElementById('modalProject').value = '';
             document.getElementById('modalObligee').value = '';
             document.getElementById('modalBondAmount').value = '';
+            document.getElementById('modalBondPremium').value = '';
             document.getElementById('modalContractAmount').value = '';
-            document.getElementById('modalPrincipal').value = 'UDHG';
+            document.getElementById('modalSuretyCompany').value = '';
+            document.getElementById('modalClosingDate').value = '';
             document.getElementById('modalState').value = '';
             document.getElementById('modalRequestor').value = '';
             document.getElementById('modalRequestorEmail').value = '';
@@ -793,13 +1050,17 @@
 
             document.getElementById('modalTitle').textContent = 'Edit Bond';
             document.getElementById('modalBondId').value = bond.id;
+            document.getElementById('modalBondNumber').value = bond.bondNumber || '';
             document.getElementById('modalBondType').value = bond.bondType || 'Bid Bond';
             document.getElementById('modalStatus').value = bond.status || 'Pending';
+            document.getElementById('modalDba').value = bond.dba || '';
             document.getElementById('modalProject').value = bond.projectName || '';
             document.getElementById('modalObligee').value = bond.obligee || '';
-            document.getElementById('modalBondAmount').value = bond.bondAmount ? bond.bondAmount.toLocaleString() : '';
-            document.getElementById('modalContractAmount').value = bond.contractAmount ? bond.contractAmount.toLocaleString() : '';
-            document.getElementById('modalPrincipal').value = bond.principal || 'UDHG';
+            document.getElementById('modalBondAmount').value = bond.bondAmount ? Number(bond.bondAmount).toLocaleString() : '';
+            document.getElementById('modalBondPremium').value = bond.bondPremium ? Number(bond.bondPremium).toLocaleString() : '';
+            document.getElementById('modalContractAmount').value = bond.contractAmount ? Number(bond.contractAmount).toLocaleString() : '';
+            document.getElementById('modalSuretyCompany').value = bond.suretyCompany || '';
+            document.getElementById('modalClosingDate').value = bond.closingDate || '';
             document.getElementById('modalState').value = bond.projectState || '';
             document.getElementById('modalRequestor').value = bond.requestorName || '';
             document.getElementById('modalRequestorEmail').value = bond.requestorEmail || '';
@@ -813,13 +1074,17 @@
             const bonds = getBonds();
 
             const bondData = {
+                bondNumber: document.getElementById('modalBondNumber').value.trim(),
                 bondType: document.getElementById('modalBondType').value,
                 status: document.getElementById('modalStatus').value,
+                dba: document.getElementById('modalDba').value,
                 projectName: document.getElementById('modalProject').value.trim(),
                 obligee: document.getElementById('modalObligee').value.trim(),
                 bondAmount: parseNumber(document.getElementById('modalBondAmount').value),
+                bondPremium: parseNumber(document.getElementById('modalBondPremium').value),
                 contractAmount: parseNumber(document.getElementById('modalContractAmount').value),
-                principal: document.getElementById('modalPrincipal').value,
+                suretyCompany: document.getElementById('modalSuretyCompany').value,
+                closingDate: document.getElementById('modalClosingDate').value,
                 projectState: document.getElementById('modalState').value.toUpperCase(),
                 requestorName: document.getElementById('modalRequestor').value.trim(),
                 requestorEmail: document.getElementById('modalRequestorEmail').value.trim(),
@@ -827,17 +1092,29 @@
             };
 
             if (id) {
-                // Update existing
+                // Update existing — preserve fields not in the modal
                 const index = bonds.findIndex(b => b.id === id);
                 if (index !== -1) {
+                    const existing = bonds[index];
                     bondData.id = id;
-                    bondData.dateSubmitted = bonds[index].dateSubmitted;
+                    bondData.principal = existing.principal || 'Unified Door and Hardware Group, LLC';
+                    bondData.dateSubmitted = existing.dateSubmitted;
                     bondData.dateModified = new Date().toISOString();
+                    // Preserve fields from the original import
+                    bondData.obligeeAddress = existing.obligeeAddress || '';
+                    bondData.mailToObligee = existing.mailToObligee || '';
+                    bondData.projectAddress = existing.projectAddress || '';
+                    bondData.scopeDescription = existing.scopeDescription || '';
+                    bondData.urgency = existing.urgency || '';
+                    bondData.bidDate = existing.bidDate || '';
+                    bondData.maintenancePeriod = existing.maintenancePeriod || '';
+                    bondData.bondFormRequired = existing.bondFormRequired || '';
                     bonds[index] = bondData;
                 }
             } else {
                 // Add new
                 bondData.id = Date.now().toString();
+                bondData.principal = 'Unified Door and Hardware Group, LLC';
                 bondData.dateSubmitted = new Date().toISOString();
                 bonds.push(bondData);
             }
@@ -865,7 +1142,7 @@
             if (e.target === this) closeModal();
         });
 
-        // Export as CSV
+        // Export as CSV (matches FBM spreadsheet columns)
         function exportBonds() {
             const bonds = getBonds();
             if (bonds.length === 0) {
@@ -873,17 +1150,21 @@
                 return;
             }
 
-            const headers = ['Date', 'Bond Type', 'Status', 'Project', 'Obligee', 'Bond Amount', 'Contract Amount', 'Principal', 'State', 'Requestor', 'Requestor Email', 'Notes'];
+            const headers = ['Bond Number', 'Date Submitted', 'Bond Type', 'Principal / DBA', 'Obligee', 'Description / Project', 'Bond Amount', 'Bond Premium', 'Contract Amount', 'Surety Company', 'Closing Date', 'State', 'Status', 'Requestor', 'Requestor Email', 'Notes'];
             const rows = bonds.map(b => [
+                b.bondNumber || '',
                 b.dateSubmitted ? new Date(b.dateSubmitted).toLocaleDateString() : '',
                 b.bondType || '',
-                b.status || '',
-                b.projectName || '',
+                b.dba || 'UDHG',
                 b.obligee || '',
+                b.projectName || '',
                 b.bondAmount || '',
+                b.bondPremium || '',
                 b.contractAmount || '',
-                b.principal || '',
+                b.suretyCompany || '',
+                b.closingDate || '',
                 b.projectState || '',
+                b.status || '',
                 b.requestorName || '',
                 b.requestorEmail || '',
                 (b.notes || '').replace(/"/g, '""')
@@ -898,7 +1179,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'udhg_pending_bonds_' + new Date().toISOString().split('T')[0] + '.csv';
+            a.download = 'udhg_bond_tracker_' + new Date().toISOString().split('T')[0] + '.csv';
             a.click();
             URL.revokeObjectURL(url);
         }
