@@ -35,27 +35,9 @@
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 30px 20px;
-        }
-
-        .btn-back {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #7f8c8d;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            text-decoration: none;
-            transition: background 0.2s;
-            margin-bottom: 20px;
-        }
-
-        .btn-back:hover {
-            background: #636e72;
         }
 
         .nav-links {
@@ -88,6 +70,23 @@
             color: white;
         }
 
+        /* Main layout: form on left, guide on right */
+        .page-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 25px;
+            align-items: start;
+        }
+
+        @media (max-width: 960px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+            }
+            .bond-guide {
+                order: -1;
+            }
+        }
+
         .section-card {
             background: white;
             border-radius: 8px;
@@ -104,43 +103,106 @@
             padding-bottom: 8px;
         }
 
-        .bond-types-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 15px 0;
+        /* Bond Guide Sidebar */
+        .bond-guide {
+            position: sticky;
+            top: 20px;
         }
 
-        @media (max-width: 768px) {
-            .bond-types-grid {
-                grid-template-columns: 1fr;
-            }
+        .bond-guide-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .bond-type-card {
+        .bond-guide-card h3 {
+            color: #8B2332;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            border-bottom: 2px solid #8B2332;
+            padding-bottom: 8px;
+        }
+
+        .bond-guide-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .bond-guide-list li {
+            border-bottom: 1px solid #eee;
+        }
+
+        .bond-guide-list li:last-child {
+            border-bottom: none;
+        }
+
+        .bond-guide-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 10px 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: #333;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+        }
+
+        .bond-guide-btn:hover {
+            background: #fdf0f1;
+            color: #8B2332;
+            border-left-color: #8B2332;
+        }
+
+        .bond-guide-btn.active {
+            background: #fdf0f1;
+            color: #8B2332;
+            font-weight: 600;
+            border-left-color: #8B2332;
+        }
+
+        .bond-detail-panel {
+            display: none;
             background: #f9f9f9;
             border-left: 4px solid #8B2332;
             border-radius: 0 8px 8px 0;
             padding: 15px;
+            margin-top: 10px;
+            animation: slideDown 0.2s ease-out;
         }
 
-        .bond-type-card h4 {
+        .bond-detail-panel.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bond-detail-panel h4 {
             color: #8B2332;
             margin-bottom: 6px;
         }
 
-        .bond-type-card p {
+        .bond-detail-panel p {
             color: #555;
             font-size: 0.9rem;
+            margin-bottom: 8px;
         }
 
-        .bond-type-card ul {
-            margin: 8px 0 0 18px;
+        .bond-detail-panel ul {
+            margin: 0 0 0 18px;
             color: #555;
             font-size: 0.85rem;
         }
 
-        .bond-type-card li {
+        .bond-detail-panel li {
             margin-bottom: 3px;
         }
 
@@ -321,6 +383,33 @@
             margin: 15px 0;
             border-radius: 0 6px 6px 0;
         }
+
+        /* Mail to obligee radio */
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-top: 6px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 400;
+            cursor: pointer;
+        }
+
+        .radio-group input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .mail-note {
+            color: #c0392b;
+            font-size: 0.85rem;
+            margin-top: 6px;
+        }
     </style>
 </head>
 <body>
@@ -337,279 +426,332 @@
             <a href="bond_request.html" class="nav-link active">Bond Request</a>
         </div>
 
-        <!-- Bond Types Overview -->
-        <div class="section-card">
-            <h2 class="section-title">Types of Bonds</h2>
+        <div class="page-layout">
+            <!-- LEFT COLUMN: Submit a Bond Form (on top / main area) -->
+            <div class="form-column">
 
-            <div class="info-box">
-                <strong>What is a surety bond?</strong> A surety bond is a three-party agreement that guarantees the principal (UDHG/FBM) will fulfill its obligations to the obligee (project owner or GC). If we don't perform, the surety company steps in to make it right.
+                <!-- What's Needed for a Bond -->
+                <div class="section-card">
+                    <h2 class="section-title">Submit a Bond Request</h2>
+
+                    <div class="info-box">
+                        <strong>What is a surety bond?</strong> A surety bond is a three-party agreement that guarantees the principal will fulfill its obligations to the obligee (project owner or GC). If the principal doesn't perform, the surety company steps in to make it right.
+                    </div>
+
+                    <p style="margin: 15px 0; color: #555;">Every bond request requires specific information. Make sure you have the following before submitting:</p>
+
+                    <ul class="checklist">
+                        <li><strong>Bond Type</strong> — Which type of bond is required (bid, performance, payment, etc.)</li>
+                        <li><strong>Obligee</strong> — The party requiring the bond with full legal name and address</li>
+                        <li><strong>Project Name & Location</strong> — Full project name and jobsite address</li>
+                        <li><strong>Bond Amount</strong> — The dollar value the bond must cover</li>
+                        <li><strong>Bid Date</strong> — When the bid is due (for bid bonds)</li>
+                        <li><strong>Contract / Bid Documents</strong> — The bond form from the contract or bid package, if provided</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        <strong>Important:</strong> Many obligees require the bond to be on their specific form. Always check the contract or bid documents for a required bond form and attach it with your request.
+                    </div>
+                </div>
+
+                <!-- Bond Request Form -->
+                <div class="section-card">
+                    <h2 class="section-title">Bond Request Form</h2>
+
+                    <p style="margin-bottom: 20px; color: #555;">Fill out the form below and click "Send Bond Request" to email the request. Attach any required bond forms or contract documents to the email before sending.</p>
+
+                    <div class="section-label">Requestor Information</div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="requestorName">Your Name <span class="required">*</span></label>
+                            <input type="text" id="requestorName" placeholder="e.g., Jane Smith">
+                        </div>
+                        <div class="form-group">
+                            <label for="requestorEmail">Your Email <span class="required">*</span></label>
+                            <input type="email" id="requestorEmail" placeholder="e.g., jane.smith@udhgroup.com">
+                        </div>
+                    </div>
+
+                    <hr class="section-divider">
+                    <div class="section-label">Bond Details</div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="bondType">Bond Type <span class="required">*</span></label>
+                            <select id="bondType" onchange="handleBondTypeChange()">
+                                <option value="">Select Bond Type...</option>
+                                <option value="bid">Bid Bond</option>
+                                <option value="performance">Performance Bond</option>
+                                <option value="payment">Payment Bond</option>
+                                <option value="perf_payment">Performance + Payment Bond</option>
+                                <option value="maintenance">Maintenance Bond</option>
+                                <option value="supply">Supply Bond</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bondAmount">Bond Amount ($) <span class="required">*</span></label>
+                            <input type="text" id="bondAmount" placeholder="e.g., 500,000" oninput="formatNumberInput(this)">
+                            <small>Dollar value the bond must cover</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group conditional-field" id="otherBondTypeGroup">
+                        <label for="otherBondType">Specify Bond Type <span class="required">*</span></label>
+                        <input type="text" id="otherBondType" placeholder="Describe the bond type needed">
+                    </div>
+
+                    <div class="form-group conditional-field" id="bidDateGroup">
+                        <label for="bidDate">Bid Due Date <span class="required">*</span></label>
+                        <input type="date" id="bidDate">
+                        <small>When is the bid due? Bond must be ready before this date.</small>
+                    </div>
+
+                    <div class="form-group conditional-field" id="maintenancePeriodGroup">
+                        <label for="maintenancePeriod">Warranty / Maintenance Period</label>
+                        <input type="text" id="maintenancePeriod" placeholder="e.g., 2 years from substantial completion">
+                    </div>
+
+                    <hr class="section-divider">
+                    <div class="section-label">Principal (Our Company)</div>
+
+                    <div class="form-group">
+                        <label for="principal">Principal Entity</label>
+                        <input type="text" id="principal" value="Unified Door and Hardware Group, LLC" readonly style="background: #f0f0f0; color: #555;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dbaSelect">DBA (Doing Business As)</label>
+                        <select id="dbaSelect">
+                            <option value="">— No DBA —</option>
+                            <option value="A.G. Mauro">A.G. Mauro</option>
+                            <option value="American Direct Procurement">American Direct Procurement</option>
+                            <option value="Commercial Hardware of MD">Commercial Hardware of MD</option>
+                            <option value="Construction Interior Products">Construction Interior Products</option>
+                            <option value="Eaton Door and Frame">Eaton Door and Frame</option>
+                            <option value="Joffe Millwork & Supply">Joffe Millwork & Supply</option>
+                            <option value="Liberty Door Systems">Liberty Door Systems</option>
+                            <option value="LIF Industries">LIF Industries</option>
+                            <option value="New Door Installation">New Door Installation</option>
+                            <option value="Next Door Distribution">Next Door Distribution</option>
+                            <option value="Rayhaven Group">Rayhaven Group</option>
+                            <option value="Specialty Services of New England">Specialty Services of New England</option>
+                            <option value="Unified Specialty Services">Unified Specialty Services</option>
+                            <option value="Weinstein & Holtzman of New York">Weinstein & Holtzman of New York</option>
+                        </select>
+                        <small>Select the DBA if this bond is under a specific branch/entity</small>
+                    </div>
+
+                    <hr class="section-divider">
+                    <div class="section-label">Obligee (Party Requiring the Bond)</div>
+
+                    <div class="form-group">
+                        <label for="obligeeName">Obligee Name <span class="required">*</span></label>
+                        <input type="text" id="obligeeName" placeholder="e.g., ABC Construction, City of Phoenix">
+                        <small>Full legal name of the entity requiring the bond</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="obligeeAddress">Obligee Address</label>
+                        <textarea id="obligeeAddress" rows="3" placeholder="123 Main Street&#10;City, State ZIP"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Do you need the bond mailed to the obligee? <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="mailToObligee" value="yes"> Yes</label>
+                            <label><input type="radio" name="mailToObligee" value="no" checked> No</label>
+                        </div>
+                        <div id="mailNote" class="mail-note" style="display: none;">The bond will be mailed to the obligee address provided above. Please make sure the address is complete and accurate.</div>
+                    </div>
+
+                    <hr class="section-divider">
+                    <div class="section-label">Project Information</div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="projectName">Project Name <span class="required">*</span></label>
+                            <input type="text" id="projectName" placeholder="e.g., Downtown Office Tower">
+                        </div>
+                        <div class="form-group">
+                            <label for="contractAmount">Contract Amount ($)</label>
+                            <input type="text" id="contractAmount" placeholder="e.g., 1,200,000" oninput="formatNumberInput(this)">
+                            <small>Optional — total value of the contract being bonded</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="projectAddress">Project Address</label>
+                        <input type="text" id="projectAddress" placeholder="e.g., 456 Oak Ave, Phoenix, AZ 85001">
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="projectState">Project State</label>
+                            <select id="projectState">
+                                <option value="">Select State...</option>
+                                <option value="AZ">Arizona (AZ)</option>
+                                <option value="CO">Colorado (CO)</option>
+                                <option value="CT">Connecticut (CT)</option>
+                                <option value="FL">Florida (FL)</option>
+                                <option value="ME">Maine (ME)</option>
+                                <option value="MA">Massachusetts (MA)</option>
+                                <option value="MD">Maryland (MD)</option>
+                                <option value="MI">Michigan (MI)</option>
+                                <option value="NJ">New Jersey (NJ)</option>
+                                <option value="NY">New York (NY)</option>
+                                <option value="PA">Pennsylvania (PA)</option>
+                                <option value="RI">Rhode Island (RI)</option>
+                                <option value="TX">Texas (TX)</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectStartDate">Estimated Start Date</label>
+                            <input type="date" id="projectStartDate">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="scopeDescription">Scope of Work</label>
+                        <textarea id="scopeDescription" rows="3" placeholder="Brief description of the work being bonded (e.g., supply and installation of commercial doors, frames, and hardware)"></textarea>
+                    </div>
+
+                    <hr class="section-divider">
+                    <div class="section-label">Additional Information</div>
+
+                    <div class="form-group">
+                        <label for="bondFormAttached">Does the obligee require a specific bond form?</label>
+                        <select id="bondFormAttached">
+                            <option value="unknown">Not sure</option>
+                            <option value="yes">Yes - I'll attach it to the email</option>
+                            <option value="no">No - Standard form is fine</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="urgency">Urgency</label>
+                        <select id="urgency">
+                            <option value="normal">Normal (3-5 business days)</option>
+                            <option value="rush">Rush (2-3 business days)</option>
+                            <option value="urgent">Urgent (24-48 hours)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additionalNotes">Additional Notes</label>
+                        <textarea id="additionalNotes" rows="3" placeholder="Any other details, special requirements, or context"></textarea>
+                    </div>
+
+                    <button class="btn btn-email" onclick="generateBondEmail()">Send Bond Request</button>
+
+                    <div id="validationError" class="warning-box" style="display: none; margin-top: 15px;">
+                        <strong>Missing required fields:</strong> <span id="validationMessage"></span>
+                    </div>
+                </div>
+
+                <!-- Email Preview -->
+                <div id="emailPreviewSection" class="section-card" style="display: none;">
+                    <h2 class="section-title">Email Preview</h2>
+                    <div class="email-preview" id="emailPreviewText"></div>
+                    <div class="btn-group">
+                        <button class="btn" onclick="copyEmail()">Copy to Clipboard</button>
+                        <a id="mailtoLink" href="#" class="btn btn-secondary">Open in Email Client</a>
+                    </div>
+                    <div class="success-box" style="margin-top: 15px;">
+                        <strong>Next step:</strong> If the obligee requires a specific bond form, attach it to the email before sending. Also attach any relevant contract or bid documents.
+                    </div>
+                </div>
             </div>
 
-            <div class="bond-types-grid">
-                <div class="bond-type-card">
-                    <h4>Bid Bond</h4>
-                    <p>Guarantees we'll honor our bid price and enter into the contract if awarded.</p>
-                    <ul>
-                        <li>Typically 5-10% of the bid amount</li>
-                        <li>Required at time of bid submission</li>
-                        <li>Protects the obligee from frivolous bids</li>
+            <!-- RIGHT COLUMN: Bond Types Guide (sidebar) -->
+            <div class="bond-guide">
+                <div class="bond-guide-card">
+                    <h3>Bond Types Guide</h3>
+                    <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">Click a bond type to learn more about it.</p>
+
+                    <ul class="bond-guide-list">
+                        <li>
+                            <button class="bond-guide-btn" onclick="toggleBondGuide('bid')">Bid Bond</button>
+                            <div class="bond-detail-panel" id="guide-bid">
+                                <h4>Bid Bond</h4>
+                                <p>Guarantees we'll honor our bid price and enter into the contract if awarded.</p>
+                                <ul>
+                                    <li>Typically 5-10% of the bid amount</li>
+                                    <li>Required at time of bid submission</li>
+                                    <li>Protects the obligee from frivolous bids</li>
+                                    <li>Released once the contract is executed or bid expires</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="bond-guide-btn" onclick="toggleBondGuide('performance')">Performance Bond</button>
+                            <div class="bond-detail-panel" id="guide-performance">
+                                <h4>Performance Bond</h4>
+                                <p>Guarantees we'll complete the work per the contract terms.</p>
+                                <ul>
+                                    <li>Usually 100% of the contract value</li>
+                                    <li>Required at contract execution</li>
+                                    <li>Surety will finish the job if we can't</li>
+                                    <li>Remains in effect until project completion and acceptance</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="bond-guide-btn" onclick="toggleBondGuide('payment')">Payment Bond</button>
+                            <div class="bond-detail-panel" id="guide-payment">
+                                <h4>Payment Bond</h4>
+                                <p>Guarantees we'll pay our subcontractors and suppliers.</p>
+                                <ul>
+                                    <li>Usually 100% of the contract value</li>
+                                    <li>Often paired with a Performance Bond</li>
+                                    <li>Protects the supply chain</li>
+                                    <li>Required on most public projects by law (Miller Act)</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="bond-guide-btn" onclick="toggleBondGuide('perf_payment')">Performance + Payment</button>
+                            <div class="bond-detail-panel" id="guide-perf_payment">
+                                <h4>Performance + Payment Bond</h4>
+                                <p>Combined bond covering both project completion and payment to subcontractors/suppliers.</p>
+                                <ul>
+                                    <li>Most common combination for construction projects</li>
+                                    <li>Usually 100% of the contract value each</li>
+                                    <li>Required on nearly all public works projects</li>
+                                    <li>Provides comprehensive protection to the obligee</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="bond-guide-btn" onclick="toggleBondGuide('maintenance')">Maintenance Bond</button>
+                            <div class="bond-detail-panel" id="guide-maintenance">
+                                <h4>Maintenance Bond</h4>
+                                <p>Covers defects in workmanship or materials after project completion.</p>
+                                <ul>
+                                    <li>Typically 1-2 year warranty period</li>
+                                    <li>Usually a percentage of contract value</li>
+                                    <li>Starts after substantial completion</li>
+                                    <li>Covers repair or replacement costs for defects</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="bond-guide-btn" onclick="toggleBondGuide('supply')">Supply Bond</button>
+                            <div class="bond-detail-panel" id="guide-supply">
+                                <h4>Supply Bond</h4>
+                                <p>Guarantees delivery of materials per the supply agreement.</p>
+                                <ul>
+                                    <li>Common for material-only contracts</li>
+                                    <li>Covers timely delivery of specified goods</li>
+                                    <li>Typically 100% of supply contract value</li>
+                                    <li>Protects against non-delivery or late delivery</li>
+                                </ul>
+                            </div>
+                        </li>
                     </ul>
                 </div>
-
-                <div class="bond-type-card">
-                    <h4>Performance Bond</h4>
-                    <p>Guarantees we'll complete the work per the contract terms.</p>
-                    <ul>
-                        <li>Usually 100% of the contract value</li>
-                        <li>Required at contract execution</li>
-                        <li>Surety will finish the job if we can't</li>
-                    </ul>
-                </div>
-
-                <div class="bond-type-card">
-                    <h4>Payment Bond</h4>
-                    <p>Guarantees we'll pay our subcontractors and suppliers.</p>
-                    <ul>
-                        <li>Usually 100% of the contract value</li>
-                        <li>Often paired with a Performance Bond</li>
-                        <li>Protects the supply chain</li>
-                    </ul>
-                </div>
-
-                <div class="bond-type-card">
-                    <h4>Maintenance Bond</h4>
-                    <p>Covers defects in workmanship or materials after project completion.</p>
-                    <ul>
-                        <li>Typically 1-2 year warranty period</li>
-                        <li>Usually a percentage of contract value</li>
-                        <li>Starts after substantial completion</li>
-                    </ul>
-                </div>
-
-                <div class="bond-type-card">
-                    <h4>Supply Bond</h4>
-                    <p>Guarantees delivery of materials per the supply agreement.</p>
-                    <ul>
-                        <li>Common for material-only contracts</li>
-                        <li>Covers timely delivery of specified goods</li>
-                        <li>Typically 100% of supply contract value</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- What's Needed for a Bond -->
-        <div class="section-card">
-            <h2 class="section-title">What's Needed on a Bond</h2>
-
-            <p>Every bond request requires specific information to be processed. Make sure you have the following before submitting:</p>
-
-            <ul class="checklist">
-                <li><strong>Bond Type</strong> — Which type of bond is required (bid, performance, payment, etc.)</li>
-                <li><strong>Principal</strong> — The UDHG/FBM entity entering the contract</li>
-                <li><strong>Obligee</strong> — The party requiring the bond (owner, GC, or government entity) with full legal name and address</li>
-                <li><strong>Project Name & Location</strong> — Full project name and jobsite address</li>
-                <li><strong>Bond Amount</strong> — The dollar value the bond must cover</li>
-                <li><strong>Contract Amount</strong> — Total value of the contract being bonded</li>
-                <li><strong>Bid Date</strong> — When the bid is due (for bid bonds)</li>
-                <li><strong>Contract / Bid Documents</strong> — The bond form from the contract or bid package, if provided</li>
-            </ul>
-
-            <div class="warning-box">
-                <strong>Important:</strong> Many obligees require the bond to be on their specific form. Always check the contract or bid documents for a required bond form and attach it with your request.
-            </div>
-        </div>
-
-        <!-- Bond Request Form -->
-        <div class="section-card">
-            <h2 class="section-title">Submit a Bond Request</h2>
-
-            <p style="margin-bottom: 20px; color: #555;">Fill out the form below and click "Send Bond Request" to email the request. Attach any required bond forms or contract documents to the email before sending.</p>
-
-            <div class="section-label">Requestor Information</div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="requestorName">Your Name <span class="required">*</span></label>
-                    <input type="text" id="requestorName" placeholder="e.g., Jane Smith">
-                </div>
-                <div class="form-group">
-                    <label for="requestorEmail">Your Email <span class="required">*</span></label>
-                    <input type="email" id="requestorEmail" placeholder="e.g., jane.smith@udhgroup.com">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="requestorBranch">Branch / DBA Name</label>
-                <input type="text" id="requestorBranch" placeholder="e.g., UDHG Phoenix">
-            </div>
-
-            <hr class="section-divider">
-            <div class="section-label">Bond Details</div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="bondType">Bond Type <span class="required">*</span></label>
-                    <select id="bondType" onchange="handleBondTypeChange()">
-                        <option value="">Select Bond Type...</option>
-                        <option value="bid">Bid Bond</option>
-                        <option value="performance">Performance Bond</option>
-                        <option value="payment">Payment Bond</option>
-                        <option value="perf_payment">Performance + Payment Bond</option>
-                        <option value="maintenance">Maintenance Bond</option>
-                        <option value="supply">Supply Bond</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="bondAmount">Bond Amount ($) <span class="required">*</span></label>
-                    <input type="text" id="bondAmount" placeholder="e.g., 500,000" oninput="formatNumberInput(this)">
-                    <small>Dollar value the bond must cover</small>
-                </div>
-            </div>
-
-            <div class="form-group conditional-field" id="otherBondTypeGroup">
-                <label for="otherBondType">Specify Bond Type <span class="required">*</span></label>
-                <input type="text" id="otherBondType" placeholder="Describe the bond type needed">
-            </div>
-
-            <div class="form-group conditional-field" id="bidDateGroup">
-                <label for="bidDate">Bid Due Date <span class="required">*</span></label>
-                <input type="date" id="bidDate">
-                <small>When is the bid due? Bond must be ready before this date.</small>
-            </div>
-
-            <div class="form-group conditional-field" id="maintenancePeriodGroup">
-                <label for="maintenancePeriod">Warranty / Maintenance Period</label>
-                <input type="text" id="maintenancePeriod" placeholder="e.g., 2 years from substantial completion">
-            </div>
-
-            <hr class="section-divider">
-            <div class="section-label">Principal (Our Company)</div>
-
-            <div class="form-group">
-                <label for="principal">Principal Entity <span class="required">*</span></label>
-                <select id="principal">
-                    <option value="">Select Entity...</option>
-                    <option value="UDHG">Unified Door and Hardware Group (UDHG)</option>
-                    <option value="FBM">Builders FirstSource (FBM)</option>
-                    <option value="other">Other / Specify</option>
-                </select>
-            </div>
-
-            <div class="form-group conditional-field" id="principalOtherGroup">
-                <label for="principalOther">Specify Principal Entity</label>
-                <input type="text" id="principalOther" placeholder="Full legal entity name">
-            </div>
-
-            <hr class="section-divider">
-            <div class="section-label">Obligee (Party Requiring the Bond)</div>
-
-            <div class="form-group">
-                <label for="obligeeName">Obligee Name <span class="required">*</span></label>
-                <input type="text" id="obligeeName" placeholder="e.g., ABC Construction, City of Phoenix">
-                <small>Full legal name of the entity requiring the bond</small>
-            </div>
-
-            <div class="form-group">
-                <label for="obligeeAddress">Obligee Address</label>
-                <textarea id="obligeeAddress" rows="3" placeholder="123 Main Street&#10;City, State ZIP"></textarea>
-            </div>
-
-            <hr class="section-divider">
-            <div class="section-label">Project Information</div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="projectName">Project Name <span class="required">*</span></label>
-                    <input type="text" id="projectName" placeholder="e.g., Downtown Office Tower">
-                </div>
-                <div class="form-group">
-                    <label for="contractAmount">Contract Amount ($) <span class="required">*</span></label>
-                    <input type="text" id="contractAmount" placeholder="e.g., 1,200,000" oninput="formatNumberInput(this)">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="projectAddress">Project Address</label>
-                <input type="text" id="projectAddress" placeholder="e.g., 456 Oak Ave, Phoenix, AZ 85001">
-            </div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="projectState">Project State</label>
-                    <select id="projectState">
-                        <option value="">Select State...</option>
-                        <option value="AZ">Arizona (AZ)</option>
-                        <option value="CO">Colorado (CO)</option>
-                        <option value="CT">Connecticut (CT)</option>
-                        <option value="FL">Florida (FL)</option>
-                        <option value="ME">Maine (ME)</option>
-                        <option value="MA">Massachusetts (MA)</option>
-                        <option value="MD">Maryland (MD)</option>
-                        <option value="MI">Michigan (MI)</option>
-                        <option value="NJ">New Jersey (NJ)</option>
-                        <option value="NY">New York (NY)</option>
-                        <option value="PA">Pennsylvania (PA)</option>
-                        <option value="RI">Rhode Island (RI)</option>
-                        <option value="TX">Texas (TX)</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="projectStartDate">Estimated Start Date</label>
-                    <input type="date" id="projectStartDate">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="scopeDescription">Scope of Work</label>
-                <textarea id="scopeDescription" rows="3" placeholder="Brief description of the work being bonded (e.g., supply and installation of commercial doors, frames, and hardware)"></textarea>
-            </div>
-
-            <hr class="section-divider">
-            <div class="section-label">Additional Information</div>
-
-            <div class="form-group">
-                <label for="bondFormAttached">Does the obligee require a specific bond form?</label>
-                <select id="bondFormAttached">
-                    <option value="unknown">Not sure</option>
-                    <option value="yes">Yes - I'll attach it to the email</option>
-                    <option value="no">No - Standard form is fine</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="urgency">Urgency</label>
-                <select id="urgency">
-                    <option value="normal">Normal (5-7 business days)</option>
-                    <option value="rush">Rush (2-3 business days)</option>
-                    <option value="urgent">Urgent (24-48 hours)</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="additionalNotes">Additional Notes</label>
-                <textarea id="additionalNotes" rows="3" placeholder="Any other details, special requirements, or context"></textarea>
-            </div>
-
-            <button class="btn btn-email" onclick="generateBondEmail()">Send Bond Request</button>
-
-            <div id="validationError" class="warning-box" style="display: none; margin-top: 15px;">
-                <strong>Missing required fields:</strong> <span id="validationMessage"></span>
-            </div>
-        </div>
-
-        <!-- Email Preview -->
-        <div id="emailPreviewSection" class="section-card" style="display: none;">
-            <h2 class="section-title">Email Preview</h2>
-            <div class="email-preview" id="emailPreviewText"></div>
-            <div class="btn-group">
-                <button class="btn" onclick="copyEmail()">Copy to Clipboard</button>
-                <a id="mailtoLink" href="#" class="btn btn-secondary">Open in Email Client</a>
-            </div>
-            <div class="success-box" style="margin-top: 15px;">
-                <strong>Next step:</strong> If the obligee requires a specific bond form, attach it to the email before sending. Also attach any relevant contract or bid documents.
             </div>
         </div>
     </div>
@@ -620,6 +762,30 @@
     </div>
 
     <script>
+        // Toggle bond guide panels
+        function toggleBondGuide(type) {
+            const panel = document.getElementById('guide-' + type);
+            const btn = panel.previousElementSibling;
+            const isOpen = panel.classList.contains('show');
+
+            // Close all panels and remove active from all buttons
+            document.querySelectorAll('.bond-detail-panel').forEach(p => p.classList.remove('show'));
+            document.querySelectorAll('.bond-guide-btn').forEach(b => b.classList.remove('active'));
+
+            // Toggle the clicked one
+            if (!isOpen) {
+                panel.classList.add('show');
+                btn.classList.add('active');
+            }
+        }
+
+        // Mail to obligee radio toggle
+        document.querySelectorAll('input[name="mailToObligee"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('mailNote').style.display = this.value === 'yes' ? 'block' : 'none';
+            });
+        });
+
         // Format number input with commas
         function formatNumberInput(input) {
             const cursorPos = input.selectionStart;
@@ -657,12 +823,18 @@
             document.getElementById('bidDateGroup').classList.toggle('show', bondType === 'bid');
             document.getElementById('maintenancePeriodGroup').classList.toggle('show', bondType === 'maintenance');
             document.getElementById('otherBondTypeGroup').classList.toggle('show', bondType === 'other');
-        }
 
-        // Show/hide principal other field
-        document.getElementById('principal').addEventListener('change', function() {
-            document.getElementById('principalOtherGroup').classList.toggle('show', this.value === 'other');
-        });
+            // Also highlight the matching guide entry
+            if (bondType && bondType !== 'other') {
+                document.querySelectorAll('.bond-detail-panel').forEach(p => p.classList.remove('show'));
+                document.querySelectorAll('.bond-guide-btn').forEach(b => b.classList.remove('active'));
+                const panel = document.getElementById('guide-' + bondType);
+                if (panel) {
+                    panel.classList.add('show');
+                    panel.previousElementSibling.classList.add('active');
+                }
+            }
+        }
 
         // Validate required fields
         function validateForm() {
@@ -672,14 +844,16 @@
             if (!document.getElementById('requestorEmail').value.trim()) missing.push('Your Email');
             if (!document.getElementById('bondType').value) missing.push('Bond Type');
             if (!document.getElementById('bondAmount').value.trim()) missing.push('Bond Amount');
-            if (!document.getElementById('principal').value) missing.push('Principal Entity');
             if (!document.getElementById('obligeeName').value.trim()) missing.push('Obligee Name');
             if (!document.getElementById('projectName').value.trim()) missing.push('Project Name');
-            if (!document.getElementById('contractAmount').value.trim()) missing.push('Contract Amount');
 
             const bondType = document.getElementById('bondType').value;
             if (bondType === 'bid' && !document.getElementById('bidDate').value) missing.push('Bid Due Date');
             if (bondType === 'other' && !document.getElementById('otherBondType').value.trim()) missing.push('Specify Bond Type');
+
+            // Check mail to obligee is answered
+            const mailChecked = document.querySelector('input[name="mailToObligee"]:checked');
+            if (!mailChecked) missing.push('Mail to Obligee');
 
             return missing;
         }
@@ -700,18 +874,15 @@
             // Gather form values
             const requestorName = document.getElementById('requestorName').value.trim();
             const requestorEmail = document.getElementById('requestorEmail').value.trim();
-            const requestorBranch = document.getElementById('requestorBranch').value.trim();
             const bondType = document.getElementById('bondType').value;
             const bondTypeName = bondType === 'other'
                 ? document.getElementById('otherBondType').value.trim()
                 : bondTypeNames[bondType];
             const bondAmount = parseNumber(document.getElementById('bondAmount').value);
-            const principal = document.getElementById('principal').value;
-            const principalName = principal === 'other'
-                ? document.getElementById('principalOther').value.trim()
-                : (principal === 'UDHG' ? 'Unified Door and Hardware Group (UDHG)' : 'Builders FirstSource (FBM)');
+            const dbaSelect = document.getElementById('dbaSelect').value;
             const obligeeName = document.getElementById('obligeeName').value.trim();
             const obligeeAddress = document.getElementById('obligeeAddress').value.trim();
+            const mailToObligee = document.querySelector('input[name="mailToObligee"]:checked').value;
             const projectName = document.getElementById('projectName').value.trim();
             const projectAddress = document.getElementById('projectAddress').value.trim();
             const projectState = document.getElementById('projectState').value;
@@ -725,6 +896,9 @@
             // Conditional fields
             const bidDate = document.getElementById('bidDate').value;
             const maintenancePeriod = document.getElementById('maintenancePeriod').value.trim();
+
+            // Principal name for email
+            const principalName = 'Unified Door and Hardware Group, LLC';
 
             // Format dates
             function formatDate(dateStr) {
@@ -751,7 +925,6 @@ REQUESTOR
 ----------------------------------------------
 - Name: ${requestorName}
 - Email: ${requestorEmail}`;
-            if (requestorBranch) body += `\n- Branch: ${requestorBranch}`;
 
             body += `
 
@@ -780,21 +953,27 @@ BOND DETAILS
 ----------------------------------------------
 PRINCIPAL
 ----------------------------------------------
-- Entity: ${principalName}
+- Entity: ${principalName}`;
+            if (dbaSelect) {
+                body += `\n- DBA: ${dbaSelect}`;
+            }
+
+            body += `
 
 ----------------------------------------------
 OBLIGEE
 ----------------------------------------------
 - Name: ${obligeeName}`;
             if (obligeeAddress) body += `\n- Address:\n  ${obligeeAddress.replace(/\n/g, '\n  ')}`;
+            body += `\n- Mail Bond to Obligee: ${mailToObligee === 'yes' ? 'Yes' : 'No'}`;
 
             body += `
 
 ----------------------------------------------
 PROJECT
 ----------------------------------------------
-- Project Name: ${projectName}
-- Contract Amount: $${contractAmount.toLocaleString()}`;
+- Project Name: ${projectName}`;
+            if (contractAmount) body += `\n- Contract Amount: $${contractAmount.toLocaleString()}`;
             if (projectAddress) body += `\n- Address: ${projectAddress}`;
             if (projectState && projectState !== 'other') body += `\n- State: ${projectState}`;
             if (startDate) body += `\n- Estimated Start: ${formatDate(startDate)}`;
@@ -820,7 +999,7 @@ ${requestorName}`;
             document.getElementById('emailPreviewText').textContent = `SUBJECT: ${subject}\n\n${body}`;
             document.getElementById('emailPreviewSection').style.display = 'block';
 
-            // Build mailto link (recipient hidden from UI)
+            // Build mailto link
             const mailtoLink = `mailto:auri.derer@udhgroup.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
             document.getElementById('mailtoLink').href = mailtoLink;
 
@@ -831,7 +1010,10 @@ ${requestorName}`;
                 bondType: bondTypeName,
                 bondAmount: bondAmount,
                 principal: principalName,
+                dba: dbaSelect || '',
                 obligee: obligeeName,
+                obligeeAddress: obligeeAddress,
+                mailToObligee: mailToObligee,
                 projectName: projectName,
                 contractAmount: contractAmount,
                 projectState: projectState,
