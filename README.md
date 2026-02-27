@@ -1,119 +1,95 @@
-# UDHG OCIP/CCIP Risk Management Portal
+# UDHG OCIP/CCIP Risk Management Portal — Proof of Concept
 
-## 🎯 Overview
+## What This Is
 
-Comprehensive web-based platform for managing Owner Controlled Insurance Programs (OCIP) and Contractor Controlled Insurance Programs (CCIP) for Unified Door and Hardware Group.
+This is a working blueprint for a centralized OCIP/CCIP management portal built for Unified Door and Hardware Group. It's designed to show what's possible — not to replace any production systems today.
 
-## ✨ Features
+The portal was built to demonstrate how we could consolidate wrap-up program tracking, compliance monitoring, and bid deduction tools into one place instead of scattered spreadsheets and manual processes.
 
-### 📊 Live Dashboard
-- Real-time compliance monitoring across all programs
+**Important: This is a proof of concept.** All project data currently shown in the dashboard is sample data for demonstration purposes. No live project information is being stored or saved at this time. The dashboard is showing you that this type of data *can* be captured and displayed — it's not reflecting real program activity yet.
+
+---
+
+## What's Been Built So Far
+
+### Live Dashboard (Sample Data)
+- Real-time compliance monitoring layout across programs
 - Financial impact tracking with bid deduct analysis
 - Automated alert system for deadlines and compliance issues
 - Visual compliance scoring with color-coded indicators
 
-### 🔧 Tools & Automation
-- **Compliance Reporter**: Automated weekly/monthly reporting
-- **Data Sync Engine**: Real-time synchronization with backend systems
-- **Insurance Calculator**: Bid deduct and cost analysis tools
-- **Bond Management**: Secure tracking of pending bonds and requests
+*All dashboard data is placeholder/test data to demonstrate the capability.*
 
-### 🛡️ Security
-- Password-protected access to sensitive bond data
-- Confidential business information handling
-- SHA-256 encrypted authentication
+### Insurance Calculator
+- Bid deduct and cost analysis tools matching our current OCIP/CCIP deduction logic
+- State-specific workers' comp rates, GL, and umbrella calculations
 
-## 🏗️ Architecture
+### Program Management Pages
+- OCIP/CCIP program details and enrollment reference
+- Bond tracking with basic password protection
+
+### Backend Automation (Early Stage)
+- Compliance reporting scripts (Python)
+- Data sync engine for database integration
+- SQLite database structure for storing program data
+
+---
+
+## What This Could Do at Scale
+
+If we decide to move forward with this, the portal could:
+
+- Replace manual spreadsheet tracking for all wrap-up projects
+- Automate compliance deadline alerts so nothing slips through the cracks
+- Give management a single view of all active programs, savings, and risk exposure
+- Generate reports without someone having to pull data from five different places
+- Track actual payroll reporting compliance and enrollment status in real time
+
+### Estimated Impact (Based on Current Program Volume)
+- Potential to save 4-6 hours weekly on manual tracking and reporting
+- Centralized data reduces errors from outdated or conflicting spreadsheets
+- Proactive deadline monitoring vs. reactive catch-up
+
+---
+
+## Current Limitations — What Would Need to Happen Next
+
+This is hosted on GitHub Pages, which is essentially bare-bones HTML/CSS/JavaScript. It works fine for a proof of concept, but for actual production use:
+
+- **IT would need to be involved.** Enterprise security protocols, authentication, and access controls would need to be implemented. I put some basic security in place (SHA-256 password hashing for the bond page), but that's nowhere near what IT would require for handling real project and financial data.
+- **Database infrastructure.** Right now the backend uses SQLite, which is lightweight and good for prototyping. A production version would likely need a more robust database solution, managed by IT.
+- **Hosting.** GitHub Pages is fine for demos. A real deployment would need to live on company infrastructure or an approved cloud environment.
+- **Data integration.** Connecting to Origami RMIS, wrap-up manager systems, and payroll would require IT coordination and proper API development.
+
+---
+
+## Architecture
 
 ```
 UDHG-OCIP-CCIP/
-├── index.html              # Main hub with navigation
-├── dashboard.html           # Live monitoring dashboard  
-├── calculator.html          # Insurance cost calculator
-├── ocip_ccip.html          # Program details and enrollment
-├── pending_bonds.html       # Secure bond tracking
-├── api/                     # Real-time data endpoints
-│   ├── wrapup-status.json  # Dashboard data feed
-│   └── programs/           # Individual program details
-└── tools/                  # Backend automation
-    ├── compliance-reporter.py  # Automated reporting
-    └── data-sync.py           # Real-time data sync
+├── index.html              # Main hub with navigation
+├── dashboard.html           # Live monitoring dashboard (SAMPLE DATA)
+├── calculator.html          # Insurance cost calculator
+├── ocip_ccip.html          # Program details and enrollment
+├── pending_bonds.html       # Bond tracking (basic auth)
+├── api/                     # Data endpoints (test data)
+│   ├── wrapup-status.json
+│   └── programs/
+└── tools/                  # Backend automation scripts
+    ├── compliance-reporter.py
+    └── data-sync.py
 ```
 
-## 🚀 Recent Enhancements (Feb 2026)
-
-### Live Dashboard System
-- Added real-time compliance monitoring
-- Automated alert generation for deadline management
-- Financial impact visualization
-- Multi-program status tracking
-
-### Backend Integration  
-- Database synchronization with wrap-up manager systems
-- Automated compliance scoring algorithms
-- Real-time deadline monitoring
-- Financial metrics calculation
-
-### Reporting Automation
-- Weekly compliance reports
-- Deadline check automation  
-- Financial impact analysis
-- Management-ready summary generation
-
-## 💰 Tracking Projects (BELOW TEST DATA)
-
-### Cost Savings
-- **$452,650** in estimated annual savings across active programs
-- **64% average compliance** reduces penalty risk
-- **Automated monitoring** eliminates manual tracking overhead
-- **Early deadline alerts** prevent costly missed submissions
-
-### Risk Mitigation
-- Real-time compliance monitoring prevents gaps
-- Automated deadline tracking reduces human error
-- Consistent documentation ensures program requirements are met
-- Financial tracking optimizes bid deduct strategies
-
-### Operational Efficiency
-- **Centralized portal** eliminates spreadsheet chaos
-- **Automated reports** save 4-6 hours weekly
-- **Real-time alerts** enable proactive management
-- **Self-service access** reduces coordination overhead
-
-## 🔄 Integration
-
-### Current Systems
-- **Origami RMIS**: Incident tracking and routing
-- **Wrap-Up Manager Database**: Compliance and enrollment data
-- **Email Systems**: Automated deadline notifications
-- **Financial Systems**: Contract value and savings tracking
-
-### API Endpoints
-```
-GET /api/wrapup-status.json       # Dashboard data
-GET /api/programs/{id}.json       # Program details
-```
-
-## 📈 Metrics (Current Period)
-
-- **4 Active Programs** being monitored
-- **$11.8M Total Contract Value** under management  
-- **3.9% Average Bid Deduct** across programs
-- **85% On-time Compliance** for payroll reporting
-- **<24hr Alert Response** time for critical deadlines
-
-## 🛠️ Technical Stack
-
-- **Frontend**: Pure HTML/CSS/JavaScript (no frameworks)
-- **Backend**: Python automation tools
-- **Database**: SQLite with real-time sync
-- **Hosting**: GitHub Pages with API integration
-- **Security**: SHA-256 authentication, confidential data handling
-
-## 📞 Support
-
-For technical issues or feature requests, contact the Risk Management automation team.
+## Technical Stack
+- Frontend: HTML/CSS/JavaScript (no frameworks)
+- Backend: Python automation tools
+- Database: SQLite (prototype)
+- Hosting: GitHub Pages
+- Security: Basic (SHA-256 auth on sensitive pages)
 
 ---
-*Last Updated: February 27, 2026*  
+
+## Bottom Line
+
+This is here to show what we could build — not what's in production. Think of it as the blueprint. Everything you see can be edited, expanded, or scaled as needed. If leadership wants to move forward, the next step would be bringing IT in to evaluate the concept and build it out with proper enterprise infrastructure.
 *Status: Production Ready*
