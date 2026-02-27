@@ -1,0 +1,51 @@
+{
+  "id": "WU-2026-004",
+  "project_name": "Healthcare Campus",
+  "project_address": "720 Medical Center Dr, Denver CO",
+  "program_type": "OCIP",
+  "enrollment_status": "enrolled",
+  "bid_deduct_pct": 4.0,
+  "contract_value": 3100000.0,
+  "estimated_completion": "2026-10-30",
+  "contact_name": "David Kumar",
+  "contact_email": "d.kumar@healthcampus.org",
+  "compliance_score": 76,
+  "payroll_reports": [
+    {
+      "id": 7,
+      "program_id": "WU-2026-004",
+      "due_date": "2026-04-20",
+      "status": "pending",
+      "payroll_amount": 0.0,
+      "submitted_date": null
+    },
+    {
+      "id": 6,
+      "program_id": "WU-2026-004",
+      "due_date": "2026-03-20",
+      "status": "pending",
+      "payroll_amount": 95000.0,
+      "submitted_date": null
+    }
+  ],
+  "enrollment_docs": [
+    {
+      "program_id": "WU-2026-004",
+      "document_type": "enrollment_form",
+      "status": "completed",
+      "submitted_date": "2026-02-10"
+    },
+    {
+      "program_id": "WU-2026-004",
+      "document_type": "insurance_verification",
+      "status": "completed",
+      "submitted_date": "2026-02-12"
+    },
+    {
+      "program_id": "WU-2026-004",
+      "document_type": "loss_history",
+      "status": "pending",
+      "submitted_date": null
+    }
+  ]
+}

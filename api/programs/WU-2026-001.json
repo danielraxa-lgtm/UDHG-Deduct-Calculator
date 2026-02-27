@@ -1,0 +1,51 @@
+{
+  "id": "WU-2026-001",
+  "project_name": "Riverside Development Phase II",
+  "project_address": "1245 Riverside Dr, Dallas TX",
+  "program_type": "OCIP",
+  "enrollment_status": "enrolled",
+  "bid_deduct_pct": 3.5,
+  "contract_value": 2850000.0,
+  "estimated_completion": "2026-08-15",
+  "contact_name": "Sarah Chen",
+  "contact_email": "s.chen@riverside.com",
+  "compliance_score": 100,
+  "payroll_reports": [
+    {
+      "id": 2,
+      "program_id": "WU-2026-001",
+      "due_date": "2026-04-15",
+      "status": "pending",
+      "payroll_amount": 0.0,
+      "submitted_date": null
+    },
+    {
+      "id": 1,
+      "program_id": "WU-2026-001",
+      "due_date": "2026-03-15",
+      "status": "pending",
+      "payroll_amount": 125000.0,
+      "submitted_date": null
+    }
+  ],
+  "enrollment_docs": [
+    {
+      "program_id": "WU-2026-001",
+      "document_type": "enrollment_form",
+      "status": "completed",
+      "submitted_date": "2026-01-15"
+    },
+    {
+      "program_id": "WU-2026-001",
+      "document_type": "insurance_verification",
+      "status": "completed",
+      "submitted_date": "2026-01-18"
+    },
+    {
+      "program_id": "WU-2026-001",
+      "document_type": "loss_history",
+      "status": "completed",
+      "submitted_date": "2026-01-20"
+    }
+  ]
+}

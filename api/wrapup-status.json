@@ -1,0 +1,108 @@
+{
+  "programs": [
+    {
+      "id": "WU-2026-004",
+      "project_name": "Healthcare Campus",
+      "project_address": "720 Medical Center Dr, Denver CO",
+      "program_type": "OCIP",
+      "enrollment_status": "enrolled",
+      "bid_deduct_pct": 4.0,
+      "contract_value": 3100000.0,
+      "estimated_completion": "2026-10-30",
+      "contact_name": "David Kumar",
+      "contact_email": "d.kumar@healthcampus.org",
+      "compliance_score": 76,
+      "payroll_due": "2026-03-20",
+      "estimated_savings": 124000,
+      "status": "active",
+      "last_updated": "2026-02-27T11:41:17.172659Z"
+    },
+    {
+      "id": "WU-2026-003",
+      "project_name": "Industrial Park Expansion",
+      "project_address": "3400 Industrial Way, Seattle WA",
+      "program_type": "OCIP",
+      "enrollment_status": "active",
+      "bid_deduct_pct": 3.8,
+      "contract_value": 4200000.0,
+      "estimated_completion": "2026-12-15",
+      "contact_name": "Jennifer Walsh",
+      "contact_email": "j.walsh@indpark.com",
+      "compliance_score": 65,
+      "payroll_due": "2026-04-10",
+      "estimated_savings": 159600,
+      "status": "active",
+      "last_updated": "2026-02-27T11:41:17.173232Z"
+    },
+    {
+      "id": "WU-2026-002",
+      "project_name": "Metro Office Complex",
+      "project_address": "890 Metro Blvd, Phoenix AZ",
+      "program_type": "CCIP",
+      "enrollment_status": "pending",
+      "bid_deduct_pct": 4.2,
+      "contract_value": 1650000.0,
+      "estimated_completion": "2026-06-30",
+      "contact_name": "Mike Rodriguez",
+      "contact_email": "mrodriguez@metroffice.com",
+      "compliance_score": 15,
+      "payroll_due": "2026-03-01",
+      "estimated_savings": 69300,
+      "status": "pending",
+      "last_updated": "2026-02-27T11:41:17.173399Z"
+    },
+    {
+      "id": "WU-2026-001",
+      "project_name": "Riverside Development Phase II",
+      "project_address": "1245 Riverside Dr, Dallas TX",
+      "program_type": "OCIP",
+      "enrollment_status": "enrolled",
+      "bid_deduct_pct": 3.5,
+      "contract_value": 2850000.0,
+      "estimated_completion": "2026-08-15",
+      "contact_name": "Sarah Chen",
+      "contact_email": "s.chen@riverside.com",
+      "compliance_score": 100,
+      "payroll_due": "2026-03-15",
+      "estimated_savings": 99750,
+      "status": "active",
+      "last_updated": "2026-02-27T11:41:17.173601Z"
+    }
+  ],
+  "summary": {
+    "total_programs": 4,
+    "active_programs": 3,
+    "pending_enrollment": 1,
+    "upcoming_deadlines": 1,
+    "total_contract_value": 11800000,
+    "estimated_total_savings": 452650,
+    "avg_compliance_score": 64
+  },
+  "alerts": [
+    {
+      "type": "financial",
+      "priority": "medium",
+      "message": "Healthcare Campus is high-value ($3,100,000) with suboptimal compliance (76%)",
+      "program_id": "WU-2026-004"
+    },
+    {
+      "type": "financial",
+      "priority": "medium",
+      "message": "Industrial Park Expansion is high-value ($4,200,000) with suboptimal compliance (65%)",
+      "program_id": "WU-2026-003"
+    },
+    {
+      "type": "deadline",
+      "priority": "high",
+      "message": "Metro Office Complex payroll report due in 2 day(s) (March 01)",
+      "program_id": "WU-2026-002"
+    },
+    {
+      "type": "compliance",
+      "priority": "high",
+      "message": "Metro Office Complex compliance score below 40% - missing enrollment docs",
+      "program_id": "WU-2026-002"
+    }
+  ],
+  "last_sync": "2026-02-27T11:41:17.178254Z"
+}

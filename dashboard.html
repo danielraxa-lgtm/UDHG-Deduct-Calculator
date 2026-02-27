@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCIP/CCIP Live Dashboard | UDHG Risk Management</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: #8B2332;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .last-updated {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #8B2332;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #8B2332;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .savings-card .metric-value {
+            color: #27AE60;
+        }
+
+        .savings-card::before {
+            background: #27AE60;
+        }
+
+        .compliance-card .metric-value {
+            color: #F39C12;
+        }
+
+        .compliance-card::before {
+            background: #F39C12;
+        }
+
+        .alerts-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .alerts-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .alerts-header h2 {
+            color: #8B2332;
+            margin-right: 15px;
+        }
+
+        .alert-badge {
+            background: #E74C3C;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .alert-item {
+            background: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+        }
+
+        .alert-item.high {
+            background: #F8D7DA;
+            border-left-color: #DC3545;
+        }
+
+        .alert-item.medium {
+            background: #FFF3CD;
+            border-left-color: #FFC107;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-priority {
+            background: #FFC107;
+            color: #212529;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 15px;
+        }
+
+        .alert-priority.high {
+            background: #DC3545;
+            color: white;
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .program-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .program-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .program-title {
+            color: #8B2332;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .program-type {
+            background: #8B2332;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background: #27AE60;
+        }
+
+        .status-pending {
+            background: #F39C12;
+        }
+
+        .status-completed {
+            background: #95A5A6;
+        }
+
+        .program-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .mini-metric {
+            text-align: center;
+        }
+
+        .mini-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #8B2332;
+        }
+
+        .mini-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .compliance-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .compliance-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .compliance-high {
+            background: #27AE60;
+        }
+
+        .compliance-medium {
+            background: #F39C12;
+        }
+
+        .compliance-low {
+            background: #E74C3C;
+        }
+
+        .nav-links {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .nav-links a {
+            color: #8B2332;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 OCIP/CCIP Live Dashboard</h1>
+        <div class="last-updated">Last Updated: <span id="lastUpdated">Loading...</span></div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <div class="metric-card">
+                <div class="metric-value" id="totalPrograms">-</div>
+                <div class="metric-label">Active Programs</div>
+            </div>
+            <div class="metric-card savings-card">
+                <div class="metric-value" id="totalSavings">-</div>
+                <div class="metric-label">Estimated Savings</div>
+            </div>
+            <div class="metric-card compliance-card">
+                <div class="metric-value" id="avgCompliance">-</div>
+                <div class="metric-label">Avg Compliance</div>
+            </div>
+        </div>
+
+        <div class="alerts-section">
+            <div class="alerts-header">
+                <h2>🚨 Active Alerts</h2>
+                <div class="alert-badge" id="alertCount">0</div>
+            </div>
+            <div id="alertsList">Loading alerts...</div>
+        </div>
+
+        <div class="programs-grid" id="programsList">
+            Loading programs...
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html">← Back to Main Hub</a> |
+            <a href="calculator.html">Insurance Calculator</a> |
+            <a href="ocip_ccip.html">Program Details</a>
+        </div>
+    </div>
+
+    <script>
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('./api/wrapup-status.json');
+                const data = await response.json();
+                
+                updateMetrics(data.summary);
+                updateAlerts(data.alerts);
+                updateProgramsList(data.programs);
+                
+                document.getElementById('lastUpdated').textContent = 
+                    new Date(data.programs[0]?.last_updated || new Date()).toLocaleString();
+                    
+            } catch (error) {
+                console.error('Failed to load dashboard data:', error);
+                document.getElementById('alertsList').innerHTML = 
+                    '<div class="alert-item high"><div class="alert-content">⚠️ Unable to load real-time data. Please refresh the page.</div></div>';
+            }
+        }
+
+        function updateMetrics(summary) {
+            document.getElementById('totalPrograms').textContent = summary.active_programs || 0;
+            document.getElementById('totalSavings').textContent = 
+                '$' + (summary.estimated_total_savings || 0).toLocaleString();
+            document.getElementById('avgCompliance').textContent = 
+                (summary.avg_compliance_score || 0) + '%';
+        }
+
+        function updateAlerts(alerts) {
+            const container = document.getElementById('alertsList');
+            const badge = document.getElementById('alertCount');
+            
+            badge.textContent = alerts.length;
+            
+            if (alerts.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">✅ No active alerts</div>';
+                return;
+            }
+            
+            container.innerHTML = alerts.map(alert => `
+                <div class="alert-item ${alert.priority}">
+                    <div class="alert-content">
+                        <strong>${getAlertIcon(alert.type)} ${alert.message}</strong>
+                        <div style="font-size: 0.9rem; margin-top: 5px; color: #666;">
+                            Program ID: ${alert.program_id}
+                        </div>
+                    </div>
+                    <div class="alert-priority ${alert.priority}">${alert.priority}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateProgramsList(programs) {
+            const container = document.getElementById('programsList');
+            
+            container.innerHTML = programs.map(program => `
+                <div class="program-card">
+                    <div class="program-header">
+                        <div class="program-title">${program.project_name}</div>
+                        <div class="program-type">${program.program_type}</div>
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <span class="status-indicator status-${program.status}"></span>
+                            <span style="font-weight: 500;">${capitalizeFirst(program.enrollment_status)}</span>
+                        </div>
+                        
+                        <div>
+                            <strong>Compliance Score:</strong> ${program.compliance_score}%
+                            <div class="compliance-bar">
+                                <div class="compliance-fill compliance-${getComplianceLevel(program.compliance_score)}" 
+                                     style="width: ${program.compliance_score}%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="program-metrics">
+                        <div class="mini-metric">
+                            <div class="mini-value">$${program.estimated_savings.toLocaleString()}</div>
+                            <div class="mini-label">Est. Savings</div>
+                        </div>
+                        <div class="mini-metric">
+                            <div class="mini-value">${program.bid_deduct_pct}%</div>
+                            <div class="mini-label">Bid Deduct</div>
+                        </div>
+                    </div>
+                    
+                    ${program.payroll_due ? `
+                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 0.9rem;">
+                            📅 Next Payroll Due: ${new Date(program.payroll_due).toLocaleDateString()}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function getAlertIcon(type) {
+            const icons = {
+                deadline: '⏰',
+                compliance: '📋',
+                financial: '💰',
+                enrollment: '📝'
+            };
+            return icons[type] || '⚠️';
+        }
+
+        function getComplianceLevel(score) {
+            if (score >= 80) return 'high';
+            if (score >= 60) return 'medium';
+            return 'low';
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1).replace('_', ' ');
+        }
+
+        // Load data on page load
+        loadDashboardData();
+        
+        // Refresh every 5 minutes
+        setInterval(loadDashboardData, 5 * 60 * 1000);
+    </script>
+</body>
+</html>

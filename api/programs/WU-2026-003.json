@@ -1,0 +1,45 @@
+{
+  "id": "WU-2026-003",
+  "project_name": "Industrial Park Expansion",
+  "project_address": "3400 Industrial Way, Seattle WA",
+  "program_type": "OCIP",
+  "enrollment_status": "active",
+  "bid_deduct_pct": 3.8,
+  "contract_value": 4200000.0,
+  "estimated_completion": "2026-12-15",
+  "contact_name": "Jennifer Walsh",
+  "contact_email": "j.walsh@indpark.com",
+  "compliance_score": 65,
+  "payroll_reports": [
+    {
+      "id": 5,
+      "program_id": "WU-2026-003",
+      "due_date": "2026-04-10",
+      "status": "pending",
+      "payroll_amount": 0.0,
+      "submitted_date": null
+    },
+    {
+      "id": 4,
+      "program_id": "WU-2026-003",
+      "due_date": "2026-03-10",
+      "status": "submitted",
+      "payroll_amount": 180000.0,
+      "submitted_date": "2026-03-08"
+    }
+  ],
+  "enrollment_docs": [
+    {
+      "program_id": "WU-2026-003",
+      "document_type": "enrollment_form",
+      "status": "completed",
+      "submitted_date": "2026-02-01"
+    },
+    {
+      "program_id": "WU-2026-003",
+      "document_type": "waiver_request",
+      "status": "pending",
+      "submitted_date": null
+    }
+  ]
+}
