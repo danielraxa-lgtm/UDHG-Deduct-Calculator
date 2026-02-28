@@ -1,0 +1,20 @@
+name = "udhg-coi-proxy"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# The worker will be available at:
+#   https://udhg-coi-proxy.<your-subdomain>.workers.dev
+#
+# Or bind it to a custom route:
+# routes = [
+#   { pattern = "coi-proxy.udhg.com/*", zone_name = "udhg.com" }
+# ]
+
+[vars]
+# Non-secret variables go here.
+# ALLOWED_ORIGIN is the GitHub Pages URL that is permitted to call this worker.
+ALLOWED_ORIGIN = "https://structcor.github.io"
+
+# IMPORTANT: Do NOT put the token here. Use `wrangler secret put` instead:
+#   npx wrangler secret put ORIGAMI_TOKEN
+# Then paste the token value when prompted.

@@ -487,8 +487,9 @@
             
             <h3 style="color:#8B2332; margin: 20px 0 15px 0;">Option 1: Use the COI Request Form (Recommended)</h3>
             <p style="margin-bottom:15px;">Submit requests and search existing COIs through Origami RMIS:</p>
-            <!-- SECURITY: Token removed from source. Configure ORIGAMI_COI_URL in your environment or replace this placeholder with a backend proxy endpoint. -->
-            <a href="#" onclick="alert('COI form URL must be configured. Contact your administrator to set up secure access to Origami RMIS.'); return false;" class="btn">Open COI Search & Request Form →</a>
+            <!-- COI link proxied through Cloudflare Worker — token is stored server-side. -->
+            <!-- After deploying workers/coi-proxy, replace YOUR_SUBDOMAIN below with your actual Cloudflare Workers subdomain. -->
+            <a href="https://udhg-coi-proxy.YOUR_SUBDOMAIN.workers.dev" target="_blank" class="btn">Open COI Search & Request Form →</a>
             
             <h3 style="color:#8B2332; margin: 30px 0 15px 0;">Option 2: Email Request</h3>
             <p>Fill out the form below and we'll generate an email you can send to Lockton:</p>
