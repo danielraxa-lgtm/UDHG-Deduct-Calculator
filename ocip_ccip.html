@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none';">
     <title>OCIP/CCIP & Insurance Hub | Unified Door and Hardware Group</title>
     <style>
         * {
@@ -483,7 +487,8 @@
             
             <h3 style="color:#8B2332; margin: 20px 0 15px 0;">Option 1: Use the COI Request Form (Recommended)</h3>
             <p style="margin-bottom:15px;">Submit requests and search existing COIs through Origami RMIS:</p>
-            <a href="https://live.origamirisk.com/Origami/IncidentEntry/Direct?token=uoB0ECgrVCmJBQg1xT78mFDKdbgqEi%2F45WJHonGvVvu4TrGcvnvEcH88%2F5fZqrnmi1bZdm7UnQDw75CyPNvQtHv6ueqc2IAg3jaQCXfrS5SGHSCD69OMeimdFrrfoYGX&CollectionLinkItemID=46" target="_blank" class="btn">Open COI Search & Request Form →</a>
+            <!-- SECURITY: Token removed from source. Configure ORIGAMI_COI_URL in your environment or replace this placeholder with a backend proxy endpoint. -->
+            <a href="#" onclick="alert('COI form URL must be configured. Contact your administrator to set up secure access to Origami RMIS.'); return false;" class="btn">Open COI Search & Request Form →</a>
             
             <h3 style="color:#8B2332; margin: 30px 0 15px 0;">Option 2: Email Request</h3>
             <p>Fill out the form below and we'll generate an email you can send to Lockton:</p>

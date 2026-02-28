@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none';">
     <title>Pending Bonds | Unified Door and Hardware Group</title>
     <style>
         * {
@@ -628,7 +632,21 @@
     </div>
 
     <script>
-        // Password hash (SHA-256) — actual password is not stored in source
+        // Sanitize strings before inserting into HTML to prevent XSS
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // SECURITY WARNING: Client-side password protection provides NO real security.
+        // This hash is visible in source code. Implement server-side authentication
+        // (OAuth, SSO, or HTTP Basic Auth over HTTPS) before production use.
+        // The hash below should be rotated and this mechanism replaced with a backend.
         const ACCESS_HASH = '66807e7218a602714c51903981492683478cc9338758424b107a95ef21c2b0ee';
         const SESSION_KEY = 'udhg_bonds_auth';
         const STORAGE_KEY = 'udhg_pending_bonds';
@@ -747,20 +765,21 @@
                     const date = bond.dateSubmitted
                         ? new Date(bond.dateSubmitted).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                         : '-';
-                    const amount = bond.bondAmount ? '$' + bond.bondAmount.toLocaleString() : '-';
-                    const statusClass = 'status-' + (bond.status || 'pending').toLowerCase();
+                    const amount = bond.bondAmount ? '$' + parseFloat(bond.bondAmount).toLocaleString() : '-';
+                    const statusClass = 'status-' + (bond.status || 'pending').toLowerCase().replace(/[^a-z]/g, '');
+                    const safeId = escapeHtml(bond.id);
 
                     return `<tr>
-                        <td>${date}</td>
-                        <td>${bond.bondType || '-'}</td>
-                        <td>${bond.projectName || '-'}</td>
-                        <td>${bond.obligee || '-'}</td>
-                        <td>${amount}</td>
-                        <td><span class="status-badge ${statusClass}">${bond.status || 'Pending'}</span></td>
-                        <td>${bond.requestorName || '-'}</td>
+                        <td>${escapeHtml(date)}</td>
+                        <td>${escapeHtml(bond.bondType || '-')}</td>
+                        <td>${escapeHtml(bond.projectName || '-')}</td>
+                        <td>${escapeHtml(bond.obligee || '-')}</td>
+                        <td>${escapeHtml(amount)}</td>
+                        <td><span class="status-badge ${statusClass}">${escapeHtml(bond.status || 'Pending')}</span></td>
+                        <td>${escapeHtml(bond.requestorName || '-')}</td>
                         <td class="actions">
-                            <button class="btn btn-sm btn-secondary" onclick="editBond('${bond.id}')">Edit</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteBond('${bond.id}')">Delete</button>
+                            <button class="btn btn-sm btn-secondary" onclick="editBond('${safeId}')">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteBond('${safeId}')">Delete</button>
                         </td>
                     </tr>`;
                 }).join('');

@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none';">
     <title>OCIP/CCIP Live Dashboard | UDHG Risk Management</title>
     <style>
         * {
@@ -340,6 +344,17 @@
     </div>
 
     <script>
+        // Sanitize strings before inserting into HTML to prevent XSS
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         async function loadDashboardData() {
             try {
                 const response = await fetch('./api/wrapup-status.json');
@@ -379,14 +394,14 @@
             }
             
             container.innerHTML = alerts.map(alert => `
-                <div class="alert-item ${alert.priority}">
+                <div class="alert-item ${escapeHtml(alert.priority)}">
                     <div class="alert-content">
-                        <strong>${getAlertIcon(alert.type)} ${alert.message}</strong>
+                        <strong>${getAlertIcon(alert.type)} ${escapeHtml(alert.message)}</strong>
                         <div style="font-size: 0.9rem; margin-top: 5px; color: #666;">
-                            Program ID: ${alert.program_id}
+                            Program ID: ${escapeHtml(alert.program_id)}
                         </div>
                     </div>
-                    <div class="alert-priority ${alert.priority}">${alert.priority}</div>
+                    <div class="alert-priority ${escapeHtml(alert.priority)}">${escapeHtml(alert.priority)}</div>
                 </div>
             `).join('');
         }
@@ -397,39 +412,39 @@
             container.innerHTML = programs.map(program => `
                 <div class="program-card">
                     <div class="program-header">
-                        <div class="program-title">${program.project_name}</div>
-                        <div class="program-type">${program.program_type}</div>
+                        <div class="program-title">${escapeHtml(program.project_name)}</div>
+                        <div class="program-type">${escapeHtml(program.program_type)}</div>
                     </div>
-                    
+
                     <div style="margin: 15px 0;">
                         <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <span class="status-indicator status-${program.status}"></span>
-                            <span style="font-weight: 500;">${capitalizeFirst(program.enrollment_status)}</span>
+                            <span class="status-indicator status-${escapeHtml(program.status)}"></span>
+                            <span style="font-weight: 500;">${escapeHtml(capitalizeFirst(program.enrollment_status))}</span>
                         </div>
-                        
+
                         <div>
-                            <strong>Compliance Score:</strong> ${program.compliance_score}%
+                            <strong>Compliance Score:</strong> ${escapeHtml(program.compliance_score)}%
                             <div class="compliance-bar">
-                                <div class="compliance-fill compliance-${getComplianceLevel(program.compliance_score)}" 
-                                     style="width: ${program.compliance_score}%;"></div>
+                                <div class="compliance-fill compliance-${getComplianceLevel(program.compliance_score)}"
+                                     style="width: ${parseFloat(program.compliance_score) || 0}%;"></div>
                             </div>
                         </div>
                     </div>
                     
                     <div class="program-metrics">
                         <div class="mini-metric">
-                            <div class="mini-value">$${program.estimated_savings.toLocaleString()}</div>
+                            <div class="mini-value">$${(parseFloat(program.estimated_savings) || 0).toLocaleString()}</div>
                             <div class="mini-label">Est. Savings</div>
                         </div>
                         <div class="mini-metric">
-                            <div class="mini-value">${program.bid_deduct_pct}%</div>
+                            <div class="mini-value">${escapeHtml(program.bid_deduct_pct)}%</div>
                             <div class="mini-label">Bid Deduct</div>
                         </div>
                     </div>
-                    
+
                     ${program.payroll_due ? `
                         <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 0.9rem;">
-                            📅 Next Payroll Due: ${new Date(program.payroll_due).toLocaleDateString()}
+                            📅 Next Payroll Due: ${escapeHtml(new Date(program.payroll_due).toLocaleDateString())}
                         </div>
                     ` : ''}
                 </div>
